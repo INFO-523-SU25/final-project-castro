@@ -1,8 +1,8 @@
 ---
-title: "Proposal title"
-subtitle: "Proposal"
+title: "Uncovering Patterns and Anomalies in Manufacturing Data"
+subtitle: "INFO 523 - Final Project"
 author: 
-  - name: "Team Name - Team member 1, Team member 2,..."
+  - name: "Cesar Castro"
     affiliations:
       - name: "College of Information Science, University of Arizona"
 description: "Project description"
@@ -19,27 +19,83 @@ execute:
 jupyter: python3
 ---
 
-```{python}
-#| label: load-pkgs
-#| message: false
-import numpy as np
-```
+## **Project Description:**
 
-## Dataset
+-    Uncovering Patterns and Anomalies in Manufacturing Data
+
+## **🎯Goals:**
+
+The construction of modern factories is resulting in the generation of vast amounts of data. Manufacturing equipment continuously monitors various parameters, such as temperatures, vibrations, motor speeds, and energy consumption, using sensors and other methods. Variations in these parameters can indicate shifts in performance, potentially leading to defects or catastrophic failures in the equipment. Detecting these shifts has become increasingly important to reduce downtime and boost productivity.
+
+Advanced techniques such as machine learning, anomaly detection, and image analysis are currently being utilized to forecast when equipment might require maintenance, calibration, or material changes. This project aims to leverage synthetic public data from Kaggle to compare various classification and regression models, with the objective of predicting these critical events. If time allows, we will also explore anomaly detection techniques on time series data to predict potential failures as early as possible.
+
+## **📊Proposed Datasets:**
+
+1.  Source: Kaggle - [Machine Predictive Maintenance Classification](https://www.kaggle.com/datasets/shivamb/machine-predictive-maintenance-classification) (Synthetic dataset that reflects real predictive maintenance encountered in the industry)
 
 ```{python}
 #| label: load-dataset
 #| message: false
+import pandas as pd
+df1 = pd.read_csv("data/predictive_maintenance.csv")
+df1.head(5)
 ```
 
-A brief description of your dataset including its provenance, dimensions, etc. as well as the reason why you chose this dataset.
+2.  Source: Kaggle - [Intelligent Manufacturing Dataset](https://www.kaggle.com/datasets/ziya07/intelligent-manufacturing-dataset/data) (The Intelligent Manufacturing Dataset for Predictive Optimization is a dataset designed for research in smart manufacturing, AI-driven process optimization, and predictive maintenance)
 
-Make sure to load the data and use inline code for some of this information.
+```{python}
+#| label: load-dataset
+#| message: false
+import pandas as pd
+df2 = pd.read_csv("data/manufacturing_6G_dataset.csv")
+df2.head(5)
+```
 
-## Questions
+## 🗓️**Project Schedule**
 
-The two questions you want to answer.
+Week 1.
 
-## Analysis plan
+-   Definition of problem statement and goals
 
--   A plan for answering each of the questions including the variables involved, variables to be created (if any), external data to be merged in (if any).
+-   Plan to incorporate peer review feedback into project plan
+
+-   Data cleaning. (handling missing, outliers, define imputation methods).
+
+-   Define key response on the datasets, depending on the model (might want to look like defects pass/fail) for a classification model or defect rate for a regression model. 
+
+Week 2. 
+
+-   Analyze features (use PCA or others to understand which features contribute more the variability, etc.)
+
+-   Classification Model Creation and Validation
+
+-   Regression Model Creation and Validation
+
+-   Comparing models and recommend the best one. 
+
+Week 3:
+
+-   Assess anomaly detection and recommend future possible next steps. 
+
+-   Prepare final Report and Presentation
+
+## 📁**Project Organization.**
+
+| \| **FINAL-PROJECT-CASTRO**
+| \| — 📁DATA                             # Raw Data Files:  #Raw Data files obtained from Kaggle source in CSV (Comma separated value) format.
+| \|        \|—-  📁processed:          # Cleaned and processed datasets
+| \|        \|—-  📁results:                # model evaluation and other results
+| \| — 📁IMAGES:                        # Any images to be used by quarto site
+| \| — 📁presentation_files:         # Quarto presentation files
+| \| — 📁extra:                             # Additional documents or files used on project
+| \| — 📁quarto:                          # quarto files
+| \| — 📁src:                                 # source code used for project
+| \| — 📁.github:                          # github configuration files
+| \| – 📄requirements.txt:             # Python Dependencies
+| \| – 📄\_quarto.yml                     # quarto metadata and configuration
+| \| – 📄.gitignore                        # list of files and directories to be ignore by Git
+| \| – 📄about.qmd                      # Quarto about page with general information about the project
+| \| – 📄presentation.qmd           # Quarto final project presentation
+| \| – 📄proposal.qmd                 # Project Problem statement and proposal
+| \| – 📄README.md                   # main read me file for git.
+|
