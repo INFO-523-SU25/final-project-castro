@@ -7,4 +7,4 @@ jupyter: python3
 
 This project was developed by **Cesar Castro M.** For [INFO 523 - Data Mining and Discovery](#0) at the University of Arizona, taught by Dr. Greg Chism. The team is comprised of the following team members.
 
--   Cesar Castro M. : Pursuing a Master in Data Science.
+-   Cesar Castro M. : Second Semester - Master in Data Science - University of Arizona.

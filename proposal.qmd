@@ -33,9 +33,12 @@ Advanced techniques such as machine learning, anomaly detection, and image analy
 
 1.  Source: Kaggle - [Machine Predictive Maintenance Classification](https://www.kaggle.com/datasets/shivamb/machine-predictive-maintenance-classification) (Synthetic dataset that reflects real predictive maintenance encountered in the industry)
 
+Data Example:
+
 ```{python}
-#| label: load-dataset
+#| label: load-dataset1
 #| message: false
+#| echo: false
 import pandas as pd
 df1 = pd.read_csv("data/predictive_maintenance.csv")
 df1.head(5)
@@ -43,9 +46,12 @@ df1.head(5)
 
 2.  Source: Kaggle - [Intelligent Manufacturing Dataset](https://www.kaggle.com/datasets/ziya07/intelligent-manufacturing-dataset/data) (The Intelligent Manufacturing Dataset for Predictive Optimization is a dataset designed for research in smart manufacturing, AI-driven process optimization, and predictive maintenance)
 
+Data Example:
+
 ```{python}
-#| label: load-dataset
+#| label: load-dataset2
 #| message: false
+#| echo: false
 import pandas as pd
 df2 = pd.read_csv("data/manufacturing_6G_dataset.csv")
 df2.head(5)
@@ -77,25 +83,25 @@ Week 3:
 
 -   Assess anomaly detection and recommend future possible next steps. 
 
--   Prepare final Report and Presentation
+-   Prepare final report and presentation
 
-## 📁**Project Organization.**
+## 📁**Project Organization**
 
 | \| **FINAL-PROJECT-CASTRO**
-| \| — 📁DATA                             # Raw Data Files:  #Raw Data files obtained from Kaggle source in CSV (Comma separated value) format.
-| \|        \|—-  📁processed:          # Cleaned and processed datasets
-| \|        \|—-  📁results:                # model evaluation and other results
-| \| — 📁IMAGES:                        # Any images to be used by quarto site
-| \| — 📁presentation_files:         # Quarto presentation files
-| \| — 📁extra:                             # Additional documents or files used on project
-| \| — 📁quarto:                          # quarto files
-| \| — 📁src:                                 # source code used for project
-| \| — 📁.github:                          # github configuration files
-| \| – 📄requirements.txt:             # Python Dependencies
-| \| – 📄\_quarto.yml                     # quarto metadata and configuration
-| \| – 📄.gitignore                        # list of files and directories to be ignore by Git
-| \| – 📄about.qmd                      # Quarto about page with general information about the project
-| \| – 📄presentation.qmd           # Quarto final project presentation
-| \| – 📄proposal.qmd                 # Project Problem statement and proposal
-| \| – 📄README.md                   # main read me file for git.
+| \| — 📁**DATA**: # Raw Data files obtained from Kaggle source in CSV format.
+| \| \_\_\_\_\_\_\|—- 📁**processed**: # Cleaned and processed datasets
+| \| \_\_\_\_\_\_\|—- 📁**results**: # model evaluation and other results
+| \| — 📁**IMAGES**: # Any images to be used by quarto site
+| \| — 📁**presentation_files**: # Quarto presentation files
+| \| — 📁**extra**: # Additional documents or files used on project
+| \| — 📁**quarto**: # quarto files
+| \| — 📁**src**: # source code used for project
+| \| — 📁.**github**: # github configuration files
+| \| – 📄**requirements.txt**: # Python Dependencies
+| \| – 📄**\_quarto.yml** # quarto metadata and configuration
+| \| – 📄**.gitignore** # list of files and directories to be ignore by Git
+| \| – 📄**about.qmd** # Quarto about page with general information about the project
+| \| – 📄**presentation.qmd** # Quarto final project presentation
+| \| – 📄**proposal.qmd** # Project Problem statement and proposal
+| \| – 📄**README.md** # main read me file for git.
 |

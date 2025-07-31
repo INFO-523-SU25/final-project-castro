@@ -1,10 +1,10 @@
 {
-  "hash": "be108ba995f489690e112524e9132186",
+  "hash": "12ee1596e9b01f8e3aac948fe20c60fa",
   "result": {
     "engine": "jupyter",
-    "markdown": "---\ntitle: \"About\"\nformat: html\neditor: visual\njupyter: python3\n---\n\nThis project was developed by **[Team Name]** For [INFO 523 - Data Mining and Discovery](https://datamineaz.org/) at the University of Arizona, taught by Dr. Greg Chism. The team is comprised of the following team members.\n\n-   Team member 1: One sentence description of Team member 1 (e.g., year, major, etc.).\n\n-   Team member 2: One sentence description of Team member 2 (e.g., year, major, etc.).\n\n-   Team member 3: One sentence description of Team member 3 (e.g., year, major, etc.).\n\n-   Team member 4: One sentence description of Team member 4 (e.g., year, major, etc.).\n\n",
+    "markdown": "---\ntitle: \"About\"\nformat: html\neditor: visual\njupyter: python3\n---\n\nThis project was developed by **Cesar Castro M.** For [INFO 523 - Data Mining and Discovery](#0) at the University of Arizona, taught by Dr. Greg Chism. The team is comprised of the following team members.\n\n-   Cesar Castro M. : Second Semester - Master in Data Science - University of Arizona.\n\n",
     "supporting": [
-      "about_files\\figure-html"
+      "about_files"
     ],
     "filters": [],
     "includes": {}

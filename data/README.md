@@ -1,9 +1,5 @@
 # Data
--   **[Dataset]**: Description of the dataset 
 
-# Codebook for [chosen] Dataset
-
-## Variable Names and Descriptions:
 
 ### Dataset 1. Source: Kaggle - https://www.kaggle.com/datasets/shivamb/machine-predictive-maintenance-classification
 
