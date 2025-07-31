@@ -4022,6 +4022,10 @@ vertical-align: -.125em;
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Project</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="./proposal.html"> 
 <span class="menu-text">Proposal</span></a>
   </li>  
@@ -4249,7 +4253,7 @@ vertical-align: -.125em;
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/INFO-523-SU25\.github\.io\/final-project-castro\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
