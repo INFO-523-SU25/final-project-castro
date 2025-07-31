@@ -1,0 +1,128 @@
+[
+  {
+    "objectID": "proposal.html",
+    "href": "proposal.html",
+    "title": "Uncovering Patterns and Anomalies in Manufacturing Data",
+    "section": "",
+    "text": "Uncovering Patterns and Anomalies in Manufacturing Data"
+  },
+  {
+    "objectID": "proposal.html#project-description",
+    "href": "proposal.html#project-description",
+    "title": "Uncovering Patterns and Anomalies in Manufacturing Data",
+    "section": "",
+    "text": "Uncovering Patterns and Anomalies in Manufacturing Data"
+  },
+  {
+    "objectID": "proposal.html#goals",
+    "href": "proposal.html#goals",
+    "title": "Uncovering Patterns and Anomalies in Manufacturing Data",
+    "section": "🎯Goals:",
+    "text": "🎯Goals:\nThe construction of modern factories is resulting in the generation of vast amounts of data. Manufacturing equipment continuously monitors various parameters, such as temperatures, vibrations, motor speeds, and energy consumption, using sensors and other methods. Variations in these parameters can indicate shifts in performance, potentially leading to defects or catastrophic failures in the equipment. Detecting these shifts has become increasingly important to reduce downtime and boost productivity.\nAdvanced techniques such as machine learning, anomaly detection, and image analysis are currently being utilized to forecast when equipment might require maintenance, calibration, or material changes. This project aims to leverage synthetic public data from Kaggle to compare various classification and regression models, with the objective of predicting these critical events. If time allows, we will also explore anomaly detection techniques on time series data to predict potential failures as early as possible."
+  },
+  {
+    "objectID": "proposal.html#proposed-datasets",
+    "href": "proposal.html#proposed-datasets",
+    "title": "Uncovering Patterns and Anomalies in Manufacturing Data",
+    "section": "📊Proposed Datasets:",
+    "text": "📊Proposed Datasets:\n\nSource: Kaggle - Machine Predictive Maintenance Classification (Synthetic dataset that reflects real predictive maintenance encountered in the industry)\n\nData Example:\n\n\n\n\n\n\n\n\n\nUDI\nProduct ID\nType\nAir temperature [K]\nProcess temperature [K]\nRotational speed [rpm]\nTorque [Nm]\nTool wear [min]\nTarget\nFailure Type\n\n\n\n\n0\n1\nM14860\nM\n298.1\n308.6\n1551\n42.8\n0\n0\nNo Failure\n\n\n1\n2\nL47181\nL\n298.2\n308.7\n1408\n46.3\n3\n0\nNo Failure\n\n\n2\n3\nL47182\nL\n298.1\n308.5\n1498\n49.4\n5\n0\nNo Failure\n\n\n3\n4\nL47183\nL\n298.2\n308.6\n1433\n39.5\n7\n0\nNo Failure\n\n\n4\n5\nL47184\nL\n298.2\n308.7\n1408\n40.0\n9\n0\nNo Failure\n\n\n\n\n\n\n\n\nSource: Kaggle - Intelligent Manufacturing Dataset (The Intelligent Manufacturing Dataset for Predictive Optimization is a dataset designed for research in smart manufacturing, AI-driven process optimization, and predictive maintenance)\n\nData Example:\n\n\n\n\n\n\n\n\n\nTimestamp\nMachine_ID\nOperation_Mode\nTemperature_C\nVibration_Hz\nPower_Consumption_kW\nNetwork_Latency_ms\nPacket_Loss_%\nQuality_Control_Defect_Rate_%\nProduction_Speed_units_per_hr\nPredictive_Maintenance_Score\nError_Rate_%\nEfficiency_Status\n\n\n\n\n0\n2024-01-01 00:00:00\n39\nIdle\n74.137590\n3.500595\n8.612162\n10.650542\n0.207764\n7.751261\n477.657391\n0.344650\n14.965470\nLow\n\n\n1\n2024-01-01 00:01:00\n29\nActive\n84.264558\n3.355928\n2.268559\n29.111810\n2.228464\n4.989172\n398.174747\n0.769848\n7.678270\nLow\n\n\n2\n2024-01-01 00:02:00\n15\nActive\n44.280102\n2.079766\n6.144105\n18.357292\n1.639416\n0.456816\n108.074959\n0.987086\n8.198391\nLow\n\n\n3\n2024-01-01 00:03:00\n43\nActive\n40.568502\n0.298238\n4.067825\n29.153629\n1.161021\n4.582974\n329.579410\n0.983390\n2.740847\nMedium\n\n\n4\n2024-01-01 00:04:00\n8\nIdle\n75.063817\n0.345810\n6.225737\n34.029191\n4.796520\n2.287716\n159.113525\n0.573117\n12.100686\nLow"
+  },
+  {
+    "objectID": "proposal.html#project-schedule",
+    "href": "proposal.html#project-schedule",
+    "title": "Uncovering Patterns and Anomalies in Manufacturing Data",
+    "section": "🗓️Project Schedule",
+    "text": "🗓️Project Schedule\nWeek 1.\n\nDefinition of problem statement and goals\nPlan to incorporate peer review feedback into project plan\nData cleaning. (handling missing, outliers, define imputation methods).\nDefine key response on the datasets, depending on the model (might want to look like defects pass/fail) for a classification model or defect rate for a regression model. \n\nWeek 2. \n\nAnalyze features (use PCA or others to understand which features contribute more the variability, etc.)\nClassification Model Creation and Validation\nRegression Model Creation and Validation\nComparing models and recommend the best one. \n\nWeek 3:\n\nAssess anomaly detection and recommend future possible next steps. \nPrepare final report and presentation"
+  },
+  {
+    "objectID": "proposal.html#project-organization",
+    "href": "proposal.html#project-organization",
+    "title": "Uncovering Patterns and Anomalies in Manufacturing Data",
+    "section": "📁Project Organization",
+    "text": "📁Project Organization\n| FINAL-PROJECT-CASTRO\n| — 📁DATA: # Raw Data files obtained from Kaggle source in CSV format.\n| ______|—- 📁processed: # Cleaned and processed datasets\n| ______|—- 📁results: # model evaluation and other results\n| — 📁IMAGES: # Any images to be used by quarto site\n| — 📁presentation_files: # Quarto presentation files\n| — 📁extra: # Additional documents or files used on project\n| — 📁quarto: # quarto files\n| — 📁src: # source code used for project\n| — 📁.github: # github configuration files\n| – 📄requirements.txt: # Python Dependencies\n| – 📄_quarto.yml # quarto metadata and configuration\n| – 📄.gitignore # list of files and directories to be ignore by Git\n| – 📄about.qmd # Quarto about page with general information about the project\n| – 📄presentation.qmd # Quarto final project presentation\n| – 📄proposal.qmd # Project Problem statement and proposal\n| – 📄README.md # main read me file for git."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Uncovering Patterns and Anomalies in Manufacturing Data",
+    "section": "",
+    "text": "Add project abstract here."
+  },
+  {
+    "objectID": "index.html#abstract",
+    "href": "index.html#abstract",
+    "title": "Uncovering Patterns and Anomalies in Manufacturing Data",
+    "section": "",
+    "text": "Add project abstract here."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "This project was developed by Cesar Castro M. For INFO 523 - Data Mining and Discovery at the University of Arizona, taught by Dr. Greg Chism. The team is comprised of the following team members.\n\nCesar Castro M. : Second Semester - Master in Data Science - University of Arizona."
+  },
+  {
+    "objectID": "presentation.html#quarto",
+    "href": "presentation.html#quarto",
+    "title": "Project title",
+    "section": "Quarto",
+    "text": "Quarto\n\nThe presentation is created using the Quarto CLI\n## sets the start of a new slide"
+  },
+  {
+    "objectID": "presentation.html#layouts",
+    "href": "presentation.html#layouts",
+    "title": "Project title",
+    "section": "Layouts",
+    "text": "Layouts\nYou can use plain text\n\n\n\nor bullet points1\n\n\nor in two columns\n\n\nlike\nthis\n\nAnd add footnotes"
+  },
+  {
+    "objectID": "presentation.html#code",
+    "href": "presentation.html#code",
+    "title": "Project title",
+    "section": "Code",
+    "text": "Code\n\n\n                            OLS Regression Results                            \n==============================================================================\nDep. Variable:                    mpg   R-squared:                       0.073\nModel:                            OLS   Adj. R-squared:                  0.070\nMethod:                 Least Squares   F-statistic:                     30.59\nDate:                Wed, 30 Jul 2025   Prob (F-statistic):           5.84e-08\nTime:                        17:34:35   Log-Likelihood:                -1346.4\nNo. Observations:                 392   AIC:                             2697.\nDf Residuals:                     390   BIC:                             2705.\nDf Model:                           1                                         \nCovariance Type:            nonrobust                                         \n==============================================================================\n                 coef    std err          t      P&gt;|t|      [0.025      0.975]\n------------------------------------------------------------------------------\nconst         35.8015      2.266     15.800      0.000      31.347      40.257\nspeed       -354.7055     64.129     -5.531      0.000    -480.788    -228.623\n==============================================================================\nOmnibus:                       27.687   Durbin-Watson:                   0.589\nProb(Omnibus):                  0.000   Jarque-Bera (JB):               18.976\nSkew:                           0.420   Prob(JB):                     7.57e-05\nKurtosis:                       2.323   Cond. No.                         169.\n==============================================================================\n\nNotes:\n[1] Standard Errors assume that the covariance matrix of the errors is correctly specified."
+  },
+  {
+    "objectID": "presentation.html#plots",
+    "href": "presentation.html#plots",
+    "title": "Project title",
+    "section": "Plots",
+    "text": "Plots"
+  },
+  {
+    "objectID": "presentation.html#plot-and-text",
+    "href": "presentation.html#plot-and-text",
+    "title": "Project title",
+    "section": "Plot and text",
+    "text": "Plot and text\n\n\n\nSome text\ngoes here"
+  },
+  {
+    "objectID": "presentation.html#tables",
+    "href": "presentation.html#tables",
+    "title": "Project title",
+    "section": "Tables",
+    "text": "Tables\nIf you want to generate a table, make sure it is in the HTML format (instead of Markdown or other formats), e.g.,\n\n\n\n\n\n\n\n\n\n\n\n\nspecies\n\n\n\nisland\n\n\n\nbill_length_mm\n\n\n\nbill_depth_mm\n\n\n\nflipper_length_mm\n\n\n\nbody_mass_g\n\n\n\nsex\n\n\n\n\n\n\n\n\n\n\n\n0\n\n\n\nAdelie\n\n\n\nTorgersen\n\n\n\n39.1\n\n\n\n18.7\n\n\n\n181.0\n\n\n\n3750.0\n\n\n\nMale\n\n\n\n\n\n\n\n1\n\n\n\nAdelie\n\n\n\nTorgersen\n\n\n\n39.5\n\n\n\n17.4\n\n\n\n186.0\n\n\n\n3800.0\n\n\n\nFemale\n\n\n\n\n\n\n\n2\n\n\n\nAdelie\n\n\n\nTorgersen\n\n\n\n40.3\n\n\n\n18.0\n\n\n\n195.0\n\n\n\n3250.0\n\n\n\nFemale\n\n\n\n\n\n\n\n4\n\n\n\nAdelie\n\n\n\nTorgersen\n\n\n\n36.7\n\n\n\n19.3\n\n\n\n193.0\n\n\n\n3450.0\n\n\n\nFemale\n\n\n\n\n\n\n\n5\n\n\n\nAdelie\n\n\n\nTorgersen\n\n\n\n39.3\n\n\n\n20.6\n\n\n\n190.0\n\n\n\n3650.0\n\n\n\nMale"
+  },
+  {
+    "objectID": "presentation.html#images",
+    "href": "presentation.html#images",
+    "title": "Project title",
+    "section": "Images",
+    "text": "Images\n\nImage credit: Danielle Navarro, Percolate."
+  },
+  {
+    "objectID": "presentation.html#math-expressions",
+    "href": "presentation.html#math-expressions",
+    "title": "Project title",
+    "section": "Math Expressions",
+    "text": "Math Expressions\nYou can write LaTeX math expressions inside a pair of dollar signs, e.g. $\\alpha+\\beta$ renders \\(\\alpha + \\beta\\). You can use the display style with double dollar signs:\n$$\\bar{X}=\\frac{1}{n}\\sum_{i=1}^nX_i$$\n\\[\n\\bar{X}=\\frac{1}{n}\\sum_{i=1}^nX_i\n\\]\nLimitations:\n\nThe source code of a LaTeX math expression must be in one line, unless it is inside a pair of double dollar signs, in which case the starting $$ must appear in the very beginning of a line, followed immediately by a non-space character, and the ending $$ must be at the end of a line, led by a non-space character;\nThere should not be spaces after the opening $ or before the closing $."
+  },
+  {
+    "objectID": "presentation.html#feeling-adventurous",
+    "href": "presentation.html#feeling-adventurous",
+    "title": "Project title",
+    "section": "Feeling adventurous?",
+    "text": "Feeling adventurous?\n\nYou are welcomed to use the default styling of the slides. In fact, that’s what I expect majority of you will do. You will differentiate yourself with the content of your presentation.\nBut some of you might want to play around with slide styling. Some solutions for this can be found at https://quarto.org/docs/presentations/revealjs."
+  }
+]
