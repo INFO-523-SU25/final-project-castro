@@ -29,6 +29,12 @@ The construction of modern factories is resulting in the generation of vast amou
 
 Advanced techniques such as machine learning, anomaly detection, and image analysis are currently being utilized to forecast when equipment might require maintenance, calibration, or material changes. This project aims to leverage synthetic public data from Kaggle to compare various classification and regression models, with the objective of predicting these critical events. If time allows, we will also explore anomaly detection techniques on time series data to predict potential failures as early as possible.
 
+Specific Objectives:
+
+1) First objective is to build a classification model for predictive maintenance (will compare multiple options). The model will analyze sensor data, such as air temperature, process temperature, rotational speed, and torque, from a predictive maintenance dataset to accurately predict the specific Failure Type.
+
+2) Second objective is to develop a regression model for anomaly detection and compare to time series analysis (e.g. ARIMA, LSTM). This model will use key features like sensor data and performance metrics to identify unusual patterns. 
+
 ## **📊Proposed Datasets:**
 
 1.  Source: Kaggle - [Machine Predictive Maintenance Classification](https://www.kaggle.com/datasets/shivamb/machine-predictive-maintenance-classification) (Synthetic dataset that reflects real predictive maintenance encountered in the industry)
@@ -44,6 +50,26 @@ df1 = pd.read_csv("data/predictive_maintenance.csv")
 df1.head(5)
 ```
 
+- Example of data, 3 categorical features and 6 numerical features to be used. This dataset will be used for classification models. 
+
+```{python}
+#| label: load-dataset1
+#| message: false
+#| echo: false
+df1.describe()
+```
+
+- There are 10000 rows on the predictive maintenance dataset, max values for Rotational speed and Tool wear might indacate outliers or some level of skewness on the data. This will be handle during the data preparation part of the project.
+
+```{python}
+#| label: load-dataset1
+#| message: false
+#| echo: false
+df1.info()
+```
+
+- There are no missing values on this dataset
+
 2.  Source: Kaggle - [Intelligent Manufacturing Dataset](https://www.kaggle.com/datasets/ziya07/intelligent-manufacturing-dataset/data) (The Intelligent Manufacturing Dataset for Predictive Optimization is a dataset designed for research in smart manufacturing, AI-driven process optimization, and predictive maintenance)
 
 Data Example:
@@ -57,33 +83,37 @@ df2 = pd.read_csv("data/manufacturing_6G_dataset.csv")
 df2.head(5)
 ```
 
+- Example of dataset, dates, numerical and categorical variables. This dataset will be used to explore regression models, time series analysis and anomaly detection.
+
+```{python}
+#| label: load-dataset1
+#| message: false
+#| echo: false
+df2.describe()
+```
+
+- There are 100000 rows on this dataset.
+
+```{python}
+#| label: load-dataset1
+#| message: false
+#| echo: false
+df2.info()
+```
+
+- There are no missing data on any of the features.
+
 ## 🗓️**Project Schedule**
 
-Week 1.
-
--   Definition of problem statement and goals
-
--   Plan to incorporate peer review feedback into project plan
-
--   Data cleaning. (handling missing, outliers, define imputation methods).
-
--   Define key response on the datasets, depending on the model (might want to look like defects pass/fail) for a classification model or defect rate for a regression model. 
-
-Week 2. 
-
--   Analyze features (use PCA or others to understand which features contribute more the variability, etc.)
-
--   Classification Model Creation and Validation
-
--   Regression Model Creation and Validation
-
--   Comparing models and recommend the best one. 
-
-Week 3:
-
--   Assess anomaly detection and recommend future possible next steps. 
-
--   Prepare final report and presentation
+-   Definition of problem statement and goals. Due Date: 8/6/2025
+-   Plan to incorporate peer review feedback into project plan. Due Date: 8/7/2025
+-   Data cleaning. (handling missing, outliers, define imputation methods). Due Date: 8/13/2025
+-   Define key response on the datasets, depending on the model (might want to look like defects pass/fail) for a classification model or defect rate for a regression model. Due Date: 8/13/2025
+-   Analyze features (use PCA or others to understand which features contribute more the variability, etc.) Due Date: 8/13/2025
+-   Classification Model Creation and Validation. Due Date: 8/15/2025
+-   Regression Model Creation and Validation,. Due Date: 8/18/2025
+-   Incorporate time series analysis and compare models and recommend the best one. . Due Date: 8/18/2025
+-   Prepare final report and presentation Due Date: 8/20/2025
 
 ## 📁**Project Organization**
 
