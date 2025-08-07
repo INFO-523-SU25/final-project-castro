@@ -31,9 +31,9 @@ Advanced techniques such as machine learning, anomaly detection, and image analy
 
 Specific Objectives:
 
-1) First objective is to build a classification model for predictive maintenance (will compare multiple options). The model will analyze sensor data, such as air temperature, process temperature, rotational speed, and torque, from a predictive maintenance dataset to accurately predict the specific Failure Type.
+1)  First objective is to build a classification model for predictive maintenance (will compare multiple options). The model will analyze sensor data, such as air temperature, process temperature, rotational speed, and torque, from a predictive maintenance dataset to accurately predict the specific Failure Type.
 
-2) Second objective is to develop a regression model for anomaly detection and compare to time series analysis (e.g. ARIMA, LSTM). This model will use key features like sensor data and performance metrics to identify unusual patterns. 
+2)  Second objective is to develop a regression model for anomaly detection and compare to time series analysis (e.g. ARIMA, LSTM). This model will use key features like sensor data and performance metrics to identify unusual patterns.
 
 ## **📊Proposed Datasets:**
 
@@ -50,25 +50,25 @@ df1 = pd.read_csv("data/predictive_maintenance.csv")
 df1.head(5)
 ```
 
-- Example of data, 3 categorical features and 6 numerical features to be used. This dataset will be used for classification models. 
+-   Example of data, 3 categorical features and 6 numerical features to be used. This dataset will be used for classification models.
 
 ```{python}
-#| label: load-dataset1
+#| label: load-dataset1a
 #| message: false
 #| echo: false
 df1.describe()
 ```
 
-- There are 10000 rows on the predictive maintenance dataset, max values for Rotational speed and Tool wear might indacate outliers or some level of skewness on the data. This will be handle during the data preparation part of the project.
+-   There are 10000 rows on the predictive maintenance dataset, max values for Rotational speed and Tool wear might indacate outliers or some level of skewness on the data. This will be handle during the data preparation part of the project.
 
 ```{python}
-#| label: load-dataset1
+#| label: load-dataset1b
 #| message: false
 #| echo: false
 df1.info()
 ```
 
-- There are no missing values on this dataset
+-   There are no missing values on this dataset
 
 2.  Source: Kaggle - [Intelligent Manufacturing Dataset](https://www.kaggle.com/datasets/ziya07/intelligent-manufacturing-dataset/data) (The Intelligent Manufacturing Dataset for Predictive Optimization is a dataset designed for research in smart manufacturing, AI-driven process optimization, and predictive maintenance)
 
@@ -83,25 +83,25 @@ df2 = pd.read_csv("data/manufacturing_6G_dataset.csv")
 df2.head(5)
 ```
 
-- Example of dataset, dates, numerical and categorical variables. This dataset will be used to explore regression models, time series analysis and anomaly detection.
+-   Example of dataset, dates, numerical and categorical variables. This dataset will be used to explore regression models, time series analysis and anomaly detection.
 
 ```{python}
-#| label: load-dataset1
+#| label: load-dataset2a
 #| message: false
 #| echo: false
 df2.describe()
 ```
 
-- There are 100000 rows on this dataset.
+-   There are 100000 rows on this dataset.
 
 ```{python}
-#| label: load-dataset1
+#| label: load-dataset2b
 #| message: false
 #| echo: false
 df2.info()
 ```
 
-- There are no missing data on any of the features.
+-   There are no missing data on any of the features.
 
 ## 🗓️**Project Schedule**
 
