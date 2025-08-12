@@ -31,7 +31,7 @@ Advanced techniques such as machine learning, anomaly detection, and image analy
 
 Specific Objectives:
 
-1)  First objective is to build a classification model for predictive maintenance (will compare multiple options). The model will analyze sensor data, such as air temperature, process temperature, rotational speed, and torque, from a predictive maintenance dataset to accurately predict the specific Failure Type.
+1)  First objective is to build a classification model for failures (will compare multiple options). The model will analyze sensor data, such as air temperature, process temperature, rotational speed, and torque, from a predictive maintenance dataset to accurately predict the specific fails and failure type.
 
 2)  Second objective is to develop a regression model for anomaly detection and compare to time series analysis (e.g. ARIMA, LSTM). This model will use key features like sensor data and performance metrics to identify unusual patterns.
 
