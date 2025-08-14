@@ -1,31 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://INFO-523-SU25.github.io/final-project-castro/src/Model_Training_PDM.html</loc>
-    <lastmod>2025-08-12T02:40:44.463Z</lastmod>
+    <loc>https://INFO-523-SU25.github.io/final-project-castro/src/Time_Series_Analysis.html</loc>
+    <lastmod>2025-08-14T22:14:10.995Z</lastmod>
   </url>
   <url>
-    <loc>https://INFO-523-SU25.github.io/final-project-castro/src/Data_Exploration_MFG6G.html</loc>
-    <lastmod>2025-08-11T23:11:20.624Z</lastmod>
-  </url>
-  <url>
-    <loc>https://INFO-523-SU25.github.io/final-project-castro/presentation.html</loc>
-    <lastmod>2025-07-31T01:26:23.707Z</lastmod>
-  </url>
-  <url>
-    <loc>https://INFO-523-SU25.github.io/final-project-castro/about.html</loc>
-    <lastmod>2025-07-31T01:50:19.740Z</lastmod>
-  </url>
-  <url>
-    <loc>https://INFO-523-SU25.github.io/final-project-castro/index.html</loc>
-    <lastmod>2025-07-31T01:50:28.458Z</lastmod>
+    <loc>https://INFO-523-SU25.github.io/final-project-castro/src/Data_Exploration_PDM.html</loc>
+    <lastmod>2025-08-12T02:44:36.388Z</lastmod>
   </url>
   <url>
     <loc>https://INFO-523-SU25.github.io/final-project-castro/proposal.html</loc>
     <lastmod>2025-08-12T02:44:45.179Z</lastmod>
   </url>
   <url>
-    <loc>https://INFO-523-SU25.github.io/final-project-castro/src/Data_Exploration_PDM.html</loc>
-    <lastmod>2025-08-12T02:44:36.388Z</lastmod>
+    <loc>https://INFO-523-SU25.github.io/final-project-castro/index.html</loc>
+    <lastmod>2025-08-14T22:14:13.467Z</lastmod>
+  </url>
+  <url>
+    <loc>https://INFO-523-SU25.github.io/final-project-castro/about.html</loc>
+    <lastmod>2025-07-31T01:50:19.740Z</lastmod>
+  </url>
+  <url>
+    <loc>https://INFO-523-SU25.github.io/final-project-castro/presentation.html</loc>
+    <lastmod>2025-07-31T01:26:23.707Z</lastmod>
+  </url>
+  <url>
+    <loc>https://INFO-523-SU25.github.io/final-project-castro/src/Data_Exploration_MFG6G.html</loc>
+    <lastmod>2025-08-13T03:50:00.648Z</lastmod>
+  </url>
+  <url>
+    <loc>https://INFO-523-SU25.github.io/final-project-castro/src/Model_Training_PDM.html</loc>
+    <lastmod>2025-08-14T21:37:43.759Z</lastmod>
   </url>
 </urlset>
