@@ -1,0 +1,12 @@
+/* Quarto adds margin between .column blocks by default.
+   Remove that, then add a real gap. */
+
+.columns > .column {
+  margin-right: 0 !important;   /* kill default spacing */
+}
+
+/* Use Flex gap for the container */
+.columns {
+  display: flex !important;
+  gap: 2rem !important;         /* <- your desired space */
+}

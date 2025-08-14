@@ -10,7 +10,7 @@ format:
    html:
     code-tools: true
     code-overflow: wrap
-    embed-resources: true
+    embed-resources: true        
 editor: visual
 execute:
   warning: false
@@ -20,4 +20,847 @@ jupyter: python3
 
 ## Abstract
 
-Add project abstract here.
+<p style="text-align: justify;">In recent decades, industry continues modernizing processes and equipment. This is creating enormous amounts of data that in many cases might be underutilized. Vast and rich data from machines, like temperatures, vibration, and pressure, are constantly monitored. Traditional statistical process control is vastly used to oversee key process parameters and provide feedback to technicians when something might be behaving abnormally. In recent years, with the explosion of AI, industry has been looking at different approaches to monitor these parameters and use different techniques to more effectively predict or detect defects in products or problems in the machines.</p>
+
+<p style="text-align: justify;">This study focuses on using machine learning algorithms like random forest and gradient boosting to predict failures and the type of failure. Real factory data has noise, interactions with many factors, and is highly imbalanced. Machines are expected to run all the time without failure, and processes ideally will produce products without any defects, which makes data highly skewed toward a good state and just a few failures. Tuning models to handle this imbalance is critical in the factories. Different sampling methods were evaluated: creating synthetic data to over-sample the negative, under-sampling the positive, and giving weights are approaches that can be used.</p>
+
+<p style="text-align: justify;">A second study was done on time-series data, where algorithms like ARIMA and LSTM were used to detect outliers over time. One big challenge is that manufacturing KPIs are typically centered around a target, and variation is random, ideally following a normal distribution but not necessarily following a pattern, which limits the use of these algorithms to predict results. However, results can still be used to detect outliers, but this might not be the best approach.</p>
+
+## Background
+
+<p style="text-align: justify;">To explore machine algorithms to detect fails, a dataset from Kaggle was used. The data "[Machine Predictive Maintenance Classification](https://www.kaggle.com/datasets/shivamb/machine-predictive-maintenance-classification) is a synthetic dataset that reflects a real use case in the industry, based on the source. The dataset consists of 10000 rows with 14 different features.</p>
+
+Key Features: (Source: <https://www.kaggle.com/datasets/shivamb/machine-predictive-maintenance-classification>)
+
+-   UID: unique identifier ranging from 1 to 10000
+
+-   productID: consisting of a letter L, M, or H for low (50% of all products), medium (30%), and high (20%) as product quality variants and a variant-specific serial number
+
+-   Type: is a columns that consist only on the letters L, M and H from productID.
+
+-   air temperature \[K\]: generated using a random walk process later normalized to a standard deviation of 2 K around 300 K
+
+-   process temperature \[K\]: generated using a random walk process normalized to a standard deviation of 1 K, added to the air temperature plus 10 K.
+
+-   rotational speed \[rpm\]: calculated from powepower of 2860 W, overlaid with a normally distributed noise
+
+-   torque \[Nm\]: torque values are normally distributed around 40 Nm with an Ïƒ = 10 Nm and no negative values.
+
+-   tool wear \[min\]: The quality variants H/M/L add 5/3/2 minutes of tool wear to the used tool in the process.
+
+-   Machine failure: label that indicates, whether the machine has failed in this particular data point for any of the following failure modes are true
+
+```{python}
+import pandas  as pd
+#| label: PMdata1
+#| message: false
+#| echo: false
+import pandas as pd
+df1 = pd.read_csv("data/predictive_maintenance.csv")
+df1.head(5)
+```
+
+**Table1**: Example of 5 rows of the synthetic data used for predictive modeling.
+
+```{python}
+#| label: PMdata2
+#| message: false
+#| echo: false
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import statsmodels.api as sm
+
+mfg_data = pd.read_csv("data/predictive_maintenance.csv")
+
+def plot_hist_qq(df,col_name):
+    col = df[col_name]
+
+    fig, (ax1, ax2) = plt.subplots(ncols=2,nrows=1,figsize=(8, 4))
+    sns.histplot(col, linewidth=1,ax=ax1)
+    #sns.kdeplot(col, linewidth=5,ax=ax1)
+    ax1.set_title(col_name + ' Histogram')
+
+    sm.qqplot(col,line='s',ax=ax2)
+    ax2.set_title(col_name + ' Q-Q Plot')
+    plt.tight_layout()
+    plt.show()
+
+def calculate_stats(df,col_name):
+    print (f"{col_name} Mean: {df[col_name].mean():.2f}")
+    print (f"{col_name} Median: {df[col_name].median():.2f}")
+    print (f"{col_name} Max: {df[col_name].max():.2f}")
+    print (f"{col_name} Min: {df[col_name].min():.2f}")
+    print (f"{col_name} Standard Deviation: {df[col_name].std():.2f}")    
+    print (f"{col_name} Number of Points: {len(df[col_name]):.0f}")    
+
+plot_hist_qq(mfg_data,'Process temperature [K]') 
+calculate_stats(mfg_data,'Process temperature [K]')    
+```
+
+**Figure 1**: Example of the distribution observed for 1 synthetic parameters (Process Temperature). Visually data seems not having a significant skew, relatively close to a normal distribution.
+
+```{python}
+#| label: PMdata3
+#| message: false
+#| echo: false
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import statsmodels.api as sm
+
+mfg_data = pd.read_csv("data/predictive_maintenance.csv")
+
+def plot_hist_qq(df,col_name):
+    col = df[col_name]
+
+    fig, (ax1, ax2) = plt.subplots(ncols=2,nrows=1,figsize=(8, 4))
+    sns.histplot(col, linewidth=1,ax=ax1)
+    #sns.kdeplot(col, linewidth=5,ax=ax1)
+    ax1.set_title(col_name + ' Histogram')
+
+    sm.qqplot(col,line='s',ax=ax2)
+    ax2.set_title(col_name + ' Q-Q Plot')
+    plt.tight_layout()
+    plt.show()
+
+def calculate_stats(df,col_name):
+    print (f"{col_name} Mean: {df[col_name].mean():.2f}")
+    print (f"{col_name} Median: {df[col_name].median():.2f}")
+    print (f"{col_name} Max: {df[col_name].max():.2f}")
+    print (f"{col_name} Min: {df[col_name].min():.2f}")
+    print (f"{col_name} Standard Deviation: {df[col_name].std():.2f}")    
+    print (f"{col_name} Number of Points: {len(df[col_name]):.0f}")    
+
+plot_hist_qq(mfg_data,'Rotational speed [rpm]') 
+calculate_stats(mfg_data,'Rotational speed [rpm]')    
+```
+
+**Figure 2**: Example of the distribution observed for 1 synthetic parameters (Rotational speed \[rpm\]). On this case data is slightly skewed which in some cases is expected for real machine data.
+
+<p style="text-align: justify;">Table 1 and Figure 1 are examples of what the data looks like; there are no missing data in this dataset as it was synthetically created, which is not normal in a real scenario. Figure 2 shows another parameter where the data are skewed. After observing all parameters, the dataset is a good representation for exploring machine learning algorithms and is able to support conclusions from the analysis.</p>
+
+All detailed data cleaning and exploration can be found here: <https://github.com/INFO-523-SU25/final-project-castro/blob/main/src/Data_Exploration_PDM.ipynb>
+
+<p style="text-align: justify;">The second dataset consists of a simulated real-time sensor data from industrial machines. Source is also from Kaggle and it can be found here: <https://www.kaggle.com/datasets/ziya07/intelligent-manufacturing-dataset/data></p>
+
+Key Features:
+
+-   Industrial IoT Sensor Data
+
+    -   Temperature_C, Vibration_Hz, Power_Consumption_kW,
+
+-   Network Performance:
+
+    -   Network_Latency_ms, Packet_Loss\_%, Quality_Control_Defect_Rate\_%
+
+-   Production Indicators:
+
+    -   Production_Speed_units_per_hr, Predictive_Maintenance_Score, Error_Rate\_%
+
+-   Target Column Efficiency_Status
+
+```{python}
+import pandas  as pd
+#| label: PMdata4
+#| message: false
+#| echo: false
+import pandas as pd
+df1 = pd.read_csv("data/manufacturing_6G_dataset.csv")
+df1.head(5)
+```
+
+**Table 2**: Example of 5 rows of the synthetic data that will be used for time series analysis.
+
+```{python}
+#| label: PMdata5
+#| message: false
+#| echo: false
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import statsmodels.api as sm
+
+mfg_data2 = pd.read_csv("data/manufacturing_6G_dataset.csv")
+
+def plot_hist_qq(df,col_name):
+    col = df[col_name]
+
+    fig, (ax1, ax2) = plt.subplots(ncols=2,nrows=1,figsize=(8, 4))
+    sns.histplot(col, linewidth=1,ax=ax1)
+    #sns.kdeplot(col, linewidth=5,ax=ax1)
+    ax1.set_title(col_name + ' Histogram')
+
+    sm.qqplot(col,line='s',ax=ax2)
+    ax2.set_title(col_name + ' Q-Q Plot')
+    plt.tight_layout()
+    plt.show()
+
+def calculate_stats(df,col_name):
+    print (f"{col_name} Mean: {df[col_name].mean():.2f}")
+    print (f"{col_name} Median: {df[col_name].median():.2f}")
+    print (f"{col_name} Max: {df[col_name].max():.2f}")
+    print (f"{col_name} Min: {df[col_name].min():.2f}")
+    print (f"{col_name} Standard Deviation: {df[col_name].std():.2f}")    
+    print (f"{col_name} Number of Points: {len(df[col_name]):.0f}")    
+
+plot_hist_qq(mfg_data2,'Power_Consumption_kW') 
+calculate_stats(mfg_data2,'Power_Consumption_kW')    
+```
+
+**Figure 3**: Example of the distribution observed on second dataset for parameter Power_Consumption_kW. Data does not follow a specific distribution, it seems randomly created over a specific range.
+
+<p style="text-align: justify;">As can be observed in Figure 3, the data from the second dataset seem more randomly created without following a specific distribution. Data in a real scenario for a machine typically follow some type of distribution and are not completely random; a common situation is that processes typically have a target value or values over time, and there is some natural variation around them. The raw data as they are from this source are not usable for the intent of this study. In order to make the data more like a real scenario, a mean was calculated for every 12 hours.</p>
+
+<p style="text-align: justify;">Results from the data transformation using the mean for blocks of 12 hours can be observed in figures 4 and 5.</p>
+
+```{python}
+#| label: PMdata6
+#| message: false
+#| echo: false
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import statsmodels.api as sm
+
+mfg_data2 = pd.read_csv("data/processed/mfg_time_series.csv")
+
+def plot_hist_qq(df,col_name):
+    col = df[col_name]
+
+    fig, (ax1, ax2) = plt.subplots(ncols=2,nrows=1,figsize=(8, 4))
+    sns.histplot(col, linewidth=1,ax=ax1)
+    #sns.kdeplot(col, linewidth=5,ax=ax1)
+    ax1.set_title(col_name + ' Histogram')
+
+    sm.qqplot(col,line='s',ax=ax2)
+    ax2.set_title(col_name + ' Q-Q Plot')
+    plt.tight_layout()
+    plt.show()
+
+def calculate_stats(df,col_name):
+    print (f"{col_name} Mean: {df[col_name].mean():.2f}")
+    print (f"{col_name} Median: {df[col_name].median():.2f}")
+    print (f"{col_name} Max: {df[col_name].max():.2f}")
+    print (f"{col_name} Min: {df[col_name].min():.2f}")
+    print (f"{col_name} Standard Deviation: {df[col_name].std():.2f}")    
+    print (f"{col_name} Number of Points: {len(df[col_name]):.0f}")    
+
+plot_hist_qq(mfg_data2,'Power_Consumption_kW') 
+calculate_stats(mfg_data2,'Power_Consumption_kW')    
+```
+
+**Figure 4**: Example of the distribution for the result of grouping the data every 12 hours and calculating the mean for each group.
+
+```{python}
+#| label: PMdata7
+#| message: false
+#| echo: false
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import statsmodels.api as sm
+
+mfg_data_2 = pd.read_csv("data/processed/mfg_time_series.csv")
+
+machine_1 =mfg_data_2[mfg_data_2['Machine_ID']==1] 
+
+start_date = "2024-01-01"
+end_date = "2024-12-30"
+tred_plot_df = machine_1[(machine_1["Timestamp"] >= start_date) & (machine_1["Timestamp"] <= end_date)]
+
+tred_plot_df['Timestamp'] = pd.to_datetime(tred_plot_df['Timestamp'])
+
+
+plt.figure(figsize=(14, 5))
+plt.plot(tred_plot_df["Timestamp"], tred_plot_df["Power_Consumption_kW"], marker="o", markersize=3, linestyle="-")
+
+plt.title("Power_Consumption (kW) Over Time", fontsize=14)
+plt.xlabel("Date")
+plt.ylabel("Power_Consumption (kW)")
+plt.grid(True, linestyle="--", alpha=0.5)  
+```
+
+**Figure 5**: Example Trend for Power_Consumption_kW for one of the machines.
+
+All detailed data cleaning and exploration for the second dataset can be found here: <https://github.com/INFO-523-SU25/final-project-castro/blob/main/src/Data_Exploration_MFG6G.ipynb>
+
+## Model Training
+
+<p style="text-align: justify;">The first objective of this study is to build a classification model for failures. The model will analyze data from Table 1 to accurately predict the specific failures and failure types.</p>
+
+<p style="text-align: justify;">The initial model will be focused on predicting the Target feature as a binary classification, basically pass or fail based on the dataset. The data were split using 70% for training and 30% for testing using stratification to maintain the distribution of 0s/1s for each set, as the data are highly imbalanced.</p>
+
+```{python}
+#| label: PMdata8
+#| message: false
+#| echo: false
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+
+from sklearn.metrics import accuracy_score, roc_auc_score, mean_squared_error, f1_score, precision_score, recall_score
+
+from sklearn.model_selection import cross_validate
+import warnings
+
+# Ignore all warnings
+warnings.filterwarnings('ignore')
+mfg_df = pd.read_csv('data/processed/predictive_maintenance_ready.csv')
+mfg_df.columns = mfg_df.columns.str.replace('[\[\]<>]', '', regex=True).astype(str)
+mfg_df.columns = mfg_df.columns.str.replace(' ', '_').astype(str)
+
+# Separate target columns and features
+X =mfg_df.drop(columns=['Target','FailureType_encoded'],axis=1)
+y0 = mfg_df['Target']
+y1 = mfg_df['FailureType_encoded']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y0, stratify=y0,  test_size=0.3, random_state=42)
+
+# Will Try Multiple Models based on some research
+# Rerference: https://github.com/dataprofessor/code/blob/master/python/comparing-classifiers.ipynb
+
+from sklearn.neural_network import MLPClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.gaussian_process import GaussianProcessClassifier
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.gaussian_process.kernels import RBF
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import ExtraTreesClassifier
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
+from sklearn.linear_model import SGDClassifier
+from sklearn.ensemble import BaggingClassifier
+from sklearn.linear_model import LogisticRegression
+
+names = ["Nearest_Neighbors",  "Gradient_Boosting", "Decision_Tree",
+        "Extra_Trees", "Random_Forest", "Neural_Net", "AdaBoost",
+        "Naive_Bayes", "QDA",'LogisticRegression']
+
+classifiers = [
+    KNeighborsClassifier(3),
+    GradientBoostingClassifier(n_estimators=100, learning_rate=1.0),
+    DecisionTreeClassifier(max_depth=5),
+    ExtraTreesClassifier(n_estimators=10, min_samples_split=2),
+    RandomForestClassifier(random_state=42),
+    MLPClassifier(alpha=1, max_iter=1000),
+    AdaBoostClassifier(n_estimators=100),
+    GaussianNB(),
+    QuadraticDiscriminantAnalysis(),
+    LogisticRegression(random_state=42)
+    ]
+
+```
+
+::::: columns
+::: column
+## AUC ROC Results
+
+```{python}
+#| label: PMdata9
+#| message: false
+#| echo: false
+scores = []
+metric = roc_auc_score
+for name, clf in zip(names, classifiers):
+    clf.fit(X_train, y_train)
+    score = clf.score(X_test, y_test)
+    y_pred = clf.predict(X_test)
+    y_prob = clf.predict_proba(X_test)[:,1]
+    rscore = metric(y_test, y_prob)
+    scores.append(rscore)
+
+#https://github.com/dataprofessor/code/blob/master/python/comparing-classifiers.ipynb
+df = pd.DataFrame()
+df['name'] = names
+df['ROC_AUC'] = scores
+df
+
+```
+
+Table 4. ROC AUC results for multiple models evaluated
+:::
+
+::: column
+## F1 Score Results
+
+```{python}
+#| label: PMdata10
+#| message: false
+#| echo: false
+scores = []
+metric = f1_score
+for name, clf in zip(names, classifiers):
+    clf.fit(X_train, y_train)
+    score = clf.score(X_test, y_test)
+    y_pred = clf.predict(X_test)
+    y_prob = clf.predict_proba(X_test)[:,1]
+    rscore = metric(y_test, y_pred)
+    scores.append(rscore)
+
+#https://github.com/dataprofessor/code/blob/master/python/comparing-classifiers.ipynb
+df = pd.DataFrame()
+df['name'] = names
+df['f1 score'] = scores
+df
+
+```
+
+Table 5. F1 Score for multiple models evaluated
+:::
+:::::
+
+<p style="text-align: justify;">This initial exploration of multiple models resulted in very high ROC_AUC scores for most of the models and not so great results for the F1 score. Based on these results we can observed: model might be over-fitting the data, resulting in high scores, and second, because data is highly imbalanced, model is great at predicting 0s (good) as they represent the majority of the sample, but when looking at the F1 score, the precision and recall for predicting the 1s is not the best. For the purposes of this study, predicting the 1s (fails) is the main problem as these are the defects.</p>
+
+<p style="text-align: justify;">Based on this initial results two models will be further evaluated Random Forest Classifer and XGBoost. Fine tuning hyper-parameters and working multiple methods of sampling to reduce or manage the imbalance of the data.</p>
+
+<p style="text-align: justify;">For hyper-parameter tuning a combination of *sklearn.model_selection - GridSearchCV and RandomizedSearchCV* was used to run over multiple options.</p>
+
+Final hyper-parameters for Random Forest Classifier Model:
+
+``` {#rf_hp .python}
+   model = RandomForestClassifier(n_estimators=50,
+                                   max_depth=10,
+                                   random_state=42,
+                                   max_features='log2',
+                                   min_samples_leaf=5,
+                                   min_samples_split=5)
+```
+
+Results for Random Forest Classifier Model:
+
+```{python}
+#| label: PMdata11
+#| message: false
+#| echo: false
+def randomforest(X, y,X1, y1):
+    
+    model = RandomForestClassifier(n_estimators=50,
+                                   max_depth=10,
+                                   random_state=42,
+                                   max_features='log2',
+                                   min_samples_leaf=5,
+                                   min_samples_split=5)
+
+    #model = RandomForestClassifier(random_state=42)
+    
+    # Train the model
+    model.fit(X, y)
+
+    # Predictions
+    y_pred = model.predict(X1)
+    # Probabilities
+    probabilities = model.predict_proba(X1)[:,1]
+
+    # Use Probabilites for ROC AUC
+    metric = roc_auc_score
+    metric_name = "ROC AUC"
+    auc_score = metric(y1, probabilities)
+    print(f"RandomForestClassifier: {metric_name} on test dataset: {auc_score:.4f}")
+
+    # Use predictions for F1 Score.
+    metric = f1_score
+    metric_name = "f1 score"
+    precision_sc = metric(y1, y_pred)
+    print(f"RandomForestClassifier: {metric_name} on test dataset: {precision_sc:.4f}")
+    
+
+    return model
+
+# Model Training
+rf_model = randomforest(X_train,y_train,X_test,y_test)
+```
+
+Cross validation is used to understand if model is over-fitting:
+
+```{python}
+#| label: PMdata12
+#| message: false
+#| echo: false
+
+#CrossValidation Function: will use to compare results between train and test data used during cross-validation to asses over-fitting.
+
+def cross_validation_check(model,X,y):
+
+    scoring = ['accuracy', 'precision','recall','f1', 'roc_auc']
+
+    cv_results = cross_validate(model, X, y, cv=5, # 3-fold to make it faster
+                          scoring=scoring,
+                          return_train_score=True) 
+
+    print(f"Cross validation results for Random Forest")
+    for key in iter(cv_results):
+        mean = cv_results[key].mean()
+        print(f"{key} Cross Validation results {mean:.2f}")
+
+    return cv_results
+
+cv_results = cross_validation_check(rf_model,X,y0)
+
+```
+
+<p style="text-align: justify;">After tuning the model, the best F1 score obtained is 0.61. Cross-validation results suggest the model is over-fitting and might not be able to generalize. </p>
+
+<p style="text-align: justify;">Different techniques were explored to see if the model would improve over-fitting and also the F1-score. Synthetic Minority Oversampling Technique (SMOTE) from the imblearn library was used; the intent of this method is to over-sample the minority class by creating synthetic data. The results from this were worse than the original model. Additionally, the under-sampling method RandomUnderSampler from the same imblearn library was used; in this case, it was used to reduce the sample of the majority class and try to balance the data. The results were not better than original tuned model.</p>
+
+<p style="text-align: justify;">Additionally, to improve the F1 score, a change in the probability threshold was explored; instead of using the normal 0.5, an analysis was done to estimate the ideal point to optimized the F1-Score.</p>
+
+```{python}
+#| label: PMdata13
+#| message: false
+#| echo: false
+
+# Plot the precision, recall and F1 for different thresholds to define prediction
+
+# Probabilities based on trained model
+y_proba = rf_model.predict_proba(X_test)[:, 1]
+
+# Evaluate metrics for thresholds from 0 to 1
+thresholds = np.linspace(0, 1, 100)
+precisions, recalls, f1s = [], [], [] 
+
+# check results for different thresholds.
+for t in thresholds:
+    y_pred = (y_proba >= t).astype(int)
+    precisions.append(precision_score(y_test, y_pred, zero_division=0))
+    recalls.append(recall_score(y_test, y_pred))
+    f1s.append(f1_score(y_test, y_pred))
+
+# 6. Plot precision, recall, F1 vs threshold
+plt.figure(figsize=(8,5))
+plt.plot(thresholds, precisions, label='Precision', color='b')
+plt.plot(thresholds, recalls, label='Recall', color='g')
+plt.plot(thresholds, f1s, label='F1-score', color='r')
+plt.xlabel('Decision Threshold')
+plt.ylabel('Score')
+plt.title('Precision, Recall, and F1 vs Decision Threshold - Random Forest Model')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+```
+
+**Figure 6**. Values of Recall, Precision and F1 Score metrics for every threshold.
+
+::::: columns
+::: column
+```{python}
+#| label: PMdata14
+#| message: false
+#| echo: false
+from sklearn.metrics import confusion_matrix
+
+y_pred = rf_model.predict(X_test)
+
+rm = confusion_matrix(y_test,y_pred)
+
+plt.figure(figsize=(6,4))
+sns.heatmap(rm, annot=True, fmt='d')
+plt.xlabel('Predictred')
+plt.ylabel('Actual')
+plt.title('Contingency Table for Random Forest')
+plt.show()
+
+```
+
+**Figure 7**. Confusion Matrix for results of Random Forest Classifier for default threshold 0.5.
+:::
+
+::: column
+```{python}
+#| label: PMdata15
+#| message: false
+#| echo: false
+y_proba = rf_model.predict_proba(X_test)[:, 1]
+threshold = 0.28 #based on optmil F1 score
+rf_preds_mod = (y_proba >= threshold).astype(int)
+
+rm = confusion_matrix(y_test,rf_preds_mod)
+
+plt.figure(figsize=(6,4))
+sns.heatmap(rm, annot=True, fmt='d')
+plt.xlabel('Predictred')
+plt.ylabel('Actual')
+plt.title('Contingency Table for Random Forest for 0.28 threshold')
+plt.tight_layout()
+plt.show()
+```
+
+**Figure 8**. Confusion Matrix for results of Random Forest Classifier for optimized threshold 0.28.
+:::
+:::::
+
+<p style="text-align: justify;">As observed in Figures 7 and 8, after improving the threshold based on the model results, a balance can be found between precision and recall. Now, this can be tuned to improve one of them, in some cases model might need to be tune if specific direction to reduce over-reject or under-reject.</p>
+
+<p style="text-align: justify;">A second approach is to use XGBoost; this model has the option to handle weights for each class. By adding a higher weight to the minority class, it is expected to handle the imbalance in the dataset better.</p>
+
+XGBoost Results:
+
+```{python}
+#| label: PMdata16
+#| message: false
+#| echo: false
+import xgboost as xgb
+
+scale_pos_weight = (len(y0) - np.sum(y0)) / np.sum(y0) #Intent is to give more weight to the minority class (1s on this case)
+xgmodel = xgb.XGBClassifier(
+    scale_pos_weight=scale_pos_weight,
+    use_label_encoder=False,
+    eval_metric='logloss',
+    random_state=42
+)
+xgmodel.fit(X_train, y_train)
+y_pred = xgmodel.predict(X_test)
+f1 = f1_score(y_test, y_pred)
+print(f"F1 Score: {f1:.3f}")
+
+results = cross_validation_check(xgmodel,X_train,y_train)
+
+```
+
+<p style="text-align: justify;">The F1 score for XGBoost without significant tuning and using weights is slightly better than the random forest model originally used. Cross-validation results are still showing some level of over-fitting but have improved from the original model. Hyperparameter tuning was done with a similar approach as with random forest, but no significant improvement was observed. </p>
+
+```{python}
+#| label: PMdata17
+#| message: false
+#| echo: false
+# Contingency Table
+y_pred = xgmodel.predict(X_test)
+
+rm = confusion_matrix(y_test,y_pred)
+
+plt.figure(figsize=(6,4))
+sns.heatmap(rm, annot=True, fmt='d')
+plt.xlabel('Predictred')
+plt.ylabel('Actual')
+plt.title('Contingency Table for XGBoost with Sample Weighting')
+plt.show()
+```
+
+**Figure 9**. Confusion Matrix for results of XGBoost Model.
+
+<p style="text-align: justify;">XGboost results are similar to the random forest optimized threshold model. Based on the cross validation results over-fitting seems better on XGBoost model.</p>
+
+### Predicting the Failure Type
+
+<p style="text-align: justify;">Since the XGBoost results were slightly better, this model will be used to go beyond the binary classification and try to predict the different failure modes.</p>
+
+```{python}
+#| label: PMdata18
+#| message: false
+#| echo: false
+# Contingency Table
+import xgboost as xgb
+from sklearn.model_selection import train_test_split
+
+X_trainF, X_testF, y_trainF, y_testF = train_test_split(X, y1,  test_size=0.3, random_state=42)
+
+classes, counts = np.unique(y1, return_counts=True)
+inv_freq = 1.0 / counts
+#Combines the classes and their inverse frequencies into a dictionary.
+class_weights = dict(zip(classes, inv_freq)) 
+#Store results in an array
+sample_weights = np.array([class_weights[label] for label in y1])
+
+xgmodelm = xgb.XGBClassifier(
+    sample_weight=sample_weights,
+    use_label_encoder=False,
+    eval_metric='logloss',
+    random_state=42
+)
+
+xgmodelm.fit(X_trainF, y_trainF)
+y_pred = xgmodelm.predict(X_testF)
+
+f1_per_class = f1_score(y_testF, y_pred, average=None)
+
+rm = confusion_matrix(y_testF,y_pred)
+
+plt.figure(figsize=(6,4))
+sns.heatmap(rm, annot=True, fmt='d')
+plt.xlabel('Predictred')
+plt.ylabel('Actual')
+plt.title('Contingency Table for XG Boost MultiClass')
+plt.show()
+
+```
+
+**Figure 10.** Confusion Matrix results for XGBoost Multi-Class model. Class Names: 'Heat Dissipation Failure': 0, 'No Failure': 1, 'Overstrain Failure': 2, 'Power Failure': 3, 'Random Failures': 4, 'Tool Wear Failure':
+
+<p style="text-align: justify;">In this case for multi-class classification, the model was trained using the same parameters as before. The main difference is how the weights (sample_weight parameter) were estimated; as there are more than one class, an array was calculated. Based on research, a common way to calculate these weights is to count the occurrence of classes and assign weights inversely proportional to this frequency.</p>
+
+<p style="text-align: justify;">Model as with binary classification is great at predicting the majority (no Failure) on this case. Class 0 which is heat-dissipation has a F1 Score of 0.68, Class 2: Overstrain Failure F1 score is 0.53 and Class 3: Power Failure is 0.77 which are similar to original model results. However, on this case model is not able to predict class 4 and 5 (Random Failures,Tool Wear Failure), F1 score is 0 for these.</p>
+
+<p style="text-align: justify;">One last important outcome of these models is to understand what features are really important. Although the model performance is not great for all classes, understanding what features are important in the prediction model can help subject matter experts interpret results and take action to reduce failures and improve the process overall.</p>
+
+```{python}
+#| label: PMdata19
+#| message: false
+#| echo: false
+# Contingency Table
+from xgboost import plot_importance
+
+plot_importance(xgmodelm, importance_type='weight')
+plt.show()
+
+```
+
+Detailed Jupyter Notebook can be found here: <https://github.com/INFO-523-SU25/final-project-castro/blob/main/src/Model_Training_PDM.ipynb>
+
+### Time Series Analysis
+
+<p style="text-align: justify;">The second objective of this study, which is also an important tool in manufacturing, is how to use machine learning and data mining skills to detect outliers or anomalies in the process. A lot of the data that streams from equipment is time-based; it is collected or sampled at a certain frequency. Anomaly detection is very valuable for the industry, as having the ability to know when a machine or process is deviating from the 'normal' can help to stop and repair equipment quickly, reducing the impact problems might have due to downtimes and defects.</p>
+
+<p style="text-align: justify;">After pre-processing the data, the study is focused on understanding how algorithms like the seasonal_decompose library and ARIMA (or auto_arima) can be used for anomaly detection. As initially observed, the data were randomly generated over a specific range; it does not follow a trend, and there is no "seasonality" in it.</p>
+
+```{python}
+#| label: PMdata20
+#| message: false
+#| echo: false
+
+mfg_data_ts = pd.read_csv("data/processed/mfg_time_series.csv")
+ts_df = mfg_data_ts.copy()
+ts_df = ts_df[ts_df['Machine_ID']==1]
+
+ts_df['Timestamp'] = pd.to_datetime(ts_df['Timestamp'])
+ts_df.set_index('Timestamp', inplace = True)
+
+#https://www.statsmodels.org/stable/generated/statsmodels.tsa.seasonal.seasonal_decompose.html
+from statsmodels.tsa.seasonal import seasonal_decompose
+
+# Decompose the time series
+decomposition = seasonal_decompose(ts_df['Power_Consumption_kW'], model = 'additive',period=14) #Since data is grouped every 12 hours, used 14 to define period as 7 days
+
+fig, axes = plt.subplots(4, 1, figsize=(8, 6), sharex=True)
+
+axes[0].plot(decomposition.observed, marker="o", markersize=3, linestyle="-")
+axes[0].set_ylabel('Observed')
+
+axes[1].plot(decomposition.trend, marker="o", markersize=3, linestyle="-")
+axes[1].set_ylabel('Trend')
+
+axes[2].plot(decomposition.seasonal, marker="o", markersize=3, linestyle="-")
+axes[2].set_ylabel('Seasonal')
+
+axes[3].plot(decomposition.resid, marker="o", markersize=3, linestyle="")
+axes[3].axhline(0, color='red', linestyle='--', linewidth=1)  
+axes[3].set_ylabel('Residual')
+axes[3].set_xlabel('Date')
+
+plt.tight_layout()
+plt.show()
+
+```
+
+**Figure 11**. Results from Deasonal Decompose. Observed data (Original Data), trend (Smothed), seasonal (results from patter fount for the period defined) and Residual (Delta between original data and trend/season components)
+
+<p style="text-align: justify;">Assuming the decomposition is somehow accurate, we can use the residuals to define how each point is deviating from what was expected. Based on this assumption, a rule can be defined to identify what constitutes abnormal behavior.</p>
+
+``` python
+# Anomalies in residuals
+residuals = decomposition.resid.dropna() #Obtain residuals from decompositions
+threshold = 2 * residuals.std() # Our rule, on this cases based on research we selected to use 2X the standard deviation of the residuals
+anomalies = np.abs(residuals) > threshold # Applying the rule to obtain the anomalies
+```
+
+<p style="text-align: justify;">The second approach is to use ARIMA (Autoregressive Integrated Moving Average model). An ARIMA model is fitted using Auto_Arima from pmdarima to facilitate the definition of P/D/Q values. Similar to other methods, after fitting the model, we calculate the difference between the actual values and the predicted values and define rules for this difference, as done with the seasonal decomposition.</p>
+
+```{python}
+#| label: PMdata21
+#| message: false
+#| echo: false
+
+mfg_data_ts = pd.read_csv("data/processed/mfg_time_series.csv")
+ts_df = mfg_data_ts.copy()
+ts_df = ts_df[ts_df['Machine_ID']==1]
+
+ts_df['Timestamp'] = pd.to_datetime(ts_df['Timestamp'])
+ts_df.set_index('Timestamp', inplace = True)
+
+from pmdarima import auto_arima
+auto_model = auto_arima(ts_df['Power_Consumption_kW'], 
+                        seasonal=False,
+ 
+                        error_action = 'ignore',  
+                        suppress_warnings = True, 
+                        stepwise = True)
+print(auto_model.summary())
+print(f"Best (p, d, q): ({auto_model.order[0]}, {auto_model.order[1]}, {auto_model.order[2]})")
+
+```
+
+**Table 6**. ARIMAX Results Summary
+
+```{python}
+#| label: PMdata22
+#| message: false
+#| echo: false
+
+fitted_values = auto_model.predict_in_sample()
+#fitted_values = auto_model.predict()
+residuals = ts_df['Power_Consumption_kW'] - fitted_values
+threshold = 2 * residuals.std()
+anomalies = np.abs(residuals) > threshold
+ts_df['Power_Consumption_kW_anomalies'] =anomalies
+
+plt_df = ts_df.copy()
+plt.figure(figsize=(10, 4))
+plt.plot(ts_df['Power_Consumption_kW'], label='Observed')
+plt.plot(fitted_values, label='Predicted')
+sns.scatterplot(ts_df,x=ts_df.index,y=ts_df['Power_Consumption_kW'],hue=ts_df['Power_Consumption_kW_anomalies'])
+plt.legend()
+plt.show()
+
+```
+
+**Figure 12.** Results from ARIMA model and anomaly points detected based on pre-defined threshold of 2X the standard deviation of the residuals (True = anomaly).
+
+<p style="text-align: justify;">Results from the predictions are almost a constant value around the center of the distribution, meaning the ARIMA model is closely predicting the mean for every single value of the time series data. One reason for this could be that the data are not predictable; as originally stated, they originated from a random generator and were summarized. Why is this still a valid dataset? A real machine, as mentioned before, might be designed to run at a specific target—let's say, consuming 6 KW—however, there is a normal variation in processes and systems that adds noise. The accuracy and precision of the tool to maintain this target will define how much it varies from this target. Now, this variation is most of the time not predictable; in these cases, models like ARIMA or the seasonal decomposition might not be ideal. LSTM was also explored, with similar results.</p>
+
+<p style="text-align: justify;">Although this dataset might not be ideal for these models, as observed in Figure 12, the model is able to identify the points that deviate the most from the center line, which is what we intended to explore in this analysis. Now, there might be simpler methods to do this in this specific case.</p>
+
+Details of analysis can be found here: [https://github.com/INFO-523-SU25/final-project-castro/blob/main/src/Time_Series_Analysis.ipynb](https://github.com/INFO-523-SU25/final-project-castro/blob/main/src/Model_Training_PDM.ipynb)
+
+## Conclusions
+
+-   The study demonstrated the application of concepts in machine learning to a common manufacturing problem.
+-   The Random Forest Classifier model ROC-AUC scores are high, indicating the model can differentiate effectively between fails and no-fails. However, in a real manufacturing process, the majority of the results are positive/pass or no fails, making this indicator not the best for this case. Recall and precision are more appropriate for this case; depending on the use case, we would want to tune the model in one or the other direction or use the F1-score to optimize both.
+-   The Random Forest model performed poorly for the F1 score when using a standard threshold of 0.5. The study demonstrated this can be improved by selecting an optimized threshold based on the model results.
+-   Sampling can be a useful method to handle imbalanced datasets; however, in this specific case, it did not provide a significant improvement in model performance.
+-   Assigning weights to each classes to handle the imbalance sample in combination with gradient boosting (XGboost) model, resulted in better results for F1-Score.
+-   Multi-class classification results using the learnings from the binary-classification were demonstrated. Due to the nature and frequency of the failures and their relationship with the input features, two classes had zero F1-scores, meaning the model was not able to predict these. Other classes had an F1-score between 0.5 and 0.7, similar to the binary classification results.
+-   The study demonstrated how seasonal-decomposition and ARIMA can be used for anomaly detection in a real manufacturing use case; results showed how data points deviating the most from the center/target can be identified by using these methods. These methods might not be the best for a process where there are no patterns and data might just have random variability from the target.
+
+## References
+
+Shivam Bansal. “Machine Predictive Maintenance Classification Dataset.” Kaggle. Available at: https://www.kaggle.com/datasets/shivamb/machine-predictive-maintenance-classification.
+
+Ziya. “Intelligent Manufacturing Dataset.” Kaggle. Available at: https://www.kaggle.com/datasets/ziya07/intelligent-manufacturing-dataset/data.
+
+INFO-524 University of Arizona. “Comparing Classifiers.” GitHub Notebook. Available at: https://github.com/dataprofessor/code/blob/master/python/comparing-classifiers.ipynb.
+
+L. Lemaître, A. Nogueira, and C. K. Aridas. “SMOTE: Synthetic Minority Over-sampling Technique.” In: imbalanced-learn documentation. Available at: https://imbalanced-learn.org/stable/references/generated/imblearn.over_sampling.SMOTE.html.
+
+L. Lemaître, A. Nogueira, and C. K. Aridas. “RandomUnderSampler.” In: imbalanced-learn documentation. Available at: https://imbalanced-learn.org/stable/references/generated/imblearn.under_sampling.RandomUnderSampler.html.
+
+T. Chen and C. Guestrin. “XGBoost for Imbalanced Classification.” XGBoosting.com. Available at: https://xgboosting.com/xgboost-for-imbalanced-classification.
+
+S. Puranik. “Calinski–Harabasz Index for K-Means Clustering Evaluation.” Towards Data Science, August 2021. Available at: https://towardsdatascience.com/calinski-harabasz-index-for-k-means-clustering-evaluation-using-python-4fefeeb2988e/.
+
+Skipper Seabold and Josef Perktold. “seasonal_decompose — Seasonal Decomposition of Time Series.” statsmodels, accessed 2025. Available at: https://www.statsmodels.org/stable/generated/statsmodels.tsa.seasonal.seasonal_decompose.html.
+
+Jason Brownlee. “Time Series Prediction with LSTM Recurrent Neural Networks in Python with Keras.” Machine Learning Mastery, March 10, 2018. Available at: https://machinelearningmastery.com/time-series-prediction-lstm-recurrent-neural-networks-python-keras/.
+
+Explanations, Troubleshooting and clarifications were aided by ChatGPT (OpenAI, 2025). OpenAI. \[Large language model\]. https://chat.openai.com/
