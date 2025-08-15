@@ -142,6 +142,8 @@ calculate_stats(mfg_data,'Rotational speed [rpm]')
 
 <p style="text-align: justify;">Table 1 and Figure 1 are examples of what the data looks like; there are no missing data in this dataset as it was synthetically created, which is not normal in a real scenario. Figure 2 shows another parameter where the data are skewed. After observing all parameters, the dataset is a good representation for exploring machine learning algorithms and is able to support conclusions from the analysis.</p>
 
+<p style="text-align: justify;">Data was standardized using sklearn standardscaler and categorical features encoded before moving to training step.</p>
+
 All detailed data cleaning and exploration can be found here: <https://github.com/INFO-523-SU25/final-project-castro/blob/main/src/Data_Exploration_PDM.ipynb>
 
 <p style="text-align: justify;">The second dataset consists of a simulated real-time sensor data from industrial machines. Source is also from Kaggle and it can be found here: <https://www.kaggle.com/datasets/ziya07/intelligent-manufacturing-dataset/data></p>
@@ -511,7 +513,7 @@ cv_results = cross_validation_check(rf_model,X,y0)
 
 ```
 
-<p style="text-align: justify;">After tuning the model, the best F1 score obtained is 0.61. Cross-validation results suggest the model is over-fitting and might not be able to generalize. </p>
+<p style="text-align: justify;">After tuning the model, the best F1 score obtained is 0.62. Cross-validation results suggest the model is over-fitting and might not be able to generalize. </p>
 
 <p style="text-align: justify;">Different techniques were explored to see if the model would improve over-fitting and also the F1-score. Synthetic Minority Oversampling Technique (SMOTE) from the imblearn library was used; the intent of this method is to over-sample the minority class by creating synthetic data. The results from this were worse than the original model. Additionally, the under-sampling method RandomUnderSampler from the same imblearn library was used; in this case, it was used to reduce the sample of the majority class and try to balance the data. The results were not better than original tuned model.</p>
 
@@ -593,7 +595,7 @@ plt.figure(figsize=(6,4))
 sns.heatmap(rm, annot=True, fmt='d')
 plt.xlabel('Predictred')
 plt.ylabel('Actual')
-plt.title('Contingency Table for Random Forest for 0.28 threshold')
+plt.title('Contingency Table for 0.28 threshold RF')
 plt.tight_layout()
 plt.show()
 ```
@@ -701,7 +703,7 @@ plt.show()
 
 <p style="text-align: justify;">In this case for multi-class classification, the model was trained using the same parameters as before. The main difference is how the weights (sample_weight parameter) were estimated; as there are more than one class, an array was calculated. Based on research, a common way to calculate these weights is to count the occurrence of classes and assign weights inversely proportional to this frequency.</p>
 
-<p style="text-align: justify;">Model as with binary classification is great at predicting the majority (no Failure) on this case. Class 0 which is heat-dissipation has a F1 Score of 0.68, Class 2: Overstrain Failure F1 score is 0.53 and Class 3: Power Failure is 0.77 which are similar to original model results. However, on this case model is not able to predict class 4 and 5 (Random Failures,Tool Wear Failure), F1 score is 0 for these.</p>
+<p style="text-align: justify;">Model as with binary classification is great at predicting the majority (no Failure) on this case. Class 0 which is heat-dissipation has a F1 Score of 0.95, Class 2: Overstrain Failure F1 score is 0.76 and Class 3: Power Failure is 0.75 which are similar to original model results. However, on this case model is not able to predict class 4 and 5 (Random Failures,Tool Wear Failure), F1 score is 0 for these.</p>
 
 <p style="text-align: justify;">One last important outcome of these models is to understand what features are really important. Although the model performance is not great for all classes, understanding what features are important in the prediction model can help subject matter experts interpret results and take action to reduce failures and improve the process overall.</p>
 
@@ -849,7 +851,7 @@ Shivam Bansal. “Machine Predictive Maintenance Classification Dataset.” Kagg
 
 Ziya. “Intelligent Manufacturing Dataset.” Kaggle. Available at: https://www.kaggle.com/datasets/ziya07/intelligent-manufacturing-dataset/data.
 
-INFO-524 University of Arizona. “Comparing Classifiers.” GitHub Notebook. Available at: https://github.com/dataprofessor/code/blob/master/python/comparing-classifiers.ipynb.
+INFO-523 University of Arizona. “Comparing Classifiers.” GitHub Notebook. Available at: https://github.com/dataprofessor/code/blob/master/python/comparing-classifiers.ipynb.
 
 L. Lemaître, A. Nogueira, and C. K. Aridas. “SMOTE: Synthetic Minority Over-sampling Technique.” In: imbalanced-learn documentation. Available at: https://imbalanced-learn.org/stable/references/generated/imblearn.over_sampling.SMOTE.html.
 
@@ -863,4 +865,4 @@ Skipper Seabold and Josef Perktold. “seasonal_decompose — Seasonal Decomposi
 
 Jason Brownlee. “Time Series Prediction with LSTM Recurrent Neural Networks in Python with Keras.” Machine Learning Mastery, March 10, 2018. Available at: https://machinelearningmastery.com/time-series-prediction-lstm-recurrent-neural-networks-python-keras/.
 
-Explanations, Troubleshooting and clarifications were aided by ChatGPT (OpenAI, 2025). OpenAI. \[Large language model\]. https://chat.openai.com/
+Explanations, troubleshooting, grammar and clarifications were aided by ChatGPT (OpenAI, 2025). OpenAI. \[Large language model\]. https://chat.openai.com/

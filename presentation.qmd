@@ -1,9 +1,9 @@
 ---
-title: "Project title"
+title: "Uncovering Patterns and Anomalies in Manufacturing Data"
 subtitle: "INFO 523 - Summer 2025 - Final Project"
-author: "Author names"
+author: "Cesar Castro M."
 title-slide-attributes:
-  data-background-image: images/watercolour_sys02_img34_teacup-ocean.jpg
+  data-background-image: images/background.png
   data-background-size: stretch
   data-background-opacity: "0.7"
   data-slide-number: none
@@ -33,7 +33,7 @@ import seaborn as sns
 #| 
 # Set up plot theme and figure resolution
 sns.set_theme(style="whitegrid")
-sns.set_context("notebook", font_scale=1.1)
+sns.set_context("notebook", font_scale=0.8)
 
 import matplotlib.pyplot as plt
 plt.rcParams['figure.dpi'] = 300
@@ -51,117 +51,397 @@ mtcars['speed'] = mtcars['horsepower'] / mtcars['weight']
 penguins = sns.load_dataset('penguins').dropna()
 ```
 
-# Using Quarto for presentations
+# Uncovering Patterns and Anomalies in Manufacturing Data
 
-## Quarto
+## Introduction
 
--   The presentation is created using the Quarto CLI
+-   All code used to generate the charts and table on this presentation can be found here:
+-   https://github.com/INFO-523-SU25/final-project-castro/tree/main/src
 
--   `##` sets the start of a new slide
 
-## Layouts
+## Dataset for Machine Learning Classification
 
-You can use plain text
+-   Source: [Machine Predictive Maintenance Classification](https://www.kaggle.com/datasets/shivamb/machine-predictive-maintenance-classification)
 
-::: columns
+-   Key Features:
+
+    ::: {style="font-size: 0.5em;"}
+    -   UID: unique identifier ranging from 1 to 10000
+    -   productID: consisting of a letter L, M, or H for low (50% of all products), medium (30%), and high (20%) as product quality variants and a variant-specific serial number
+    -   Type: is a columns that consist only on the letters L, M and H from productID.
+    -   air temperature \[K\]: generated using a random walk process later normalized to a standard deviation of 2 K around 300 K
+    -   process temperature \[K\]: generated using a random walk process normalized to a standard deviation of 1 K, added to the air temperature plus 10 K.
+    -   rotational speed \[rpm\]: calculated from powepower of 2860 W, overlaid with a normally distributed noise
+    -   torque \[Nm\]: torque values are normally distributed around 40 Nm with an Ïƒ = 10 Nm and no negative values.
+    -   tool wear \[min\]: The quality variants H/M/L add 5/3/2 minutes of tool wear to the used tool in the process.
+    -   Machine failure: label that indicates, whether the machine has failed in this particular data point for any of the following failure modes are true
+    :::
+
+## Manufacturing Data Exploration
+
+Example of 5 rows of the synthetic data used for predictive modeling.
+
+::: {style="font-size: 0.5em;"}
+```{python}
+import pandas as pd
+df1 = pd.read_csv("data/predictive_maintenance.csv")
+df1.head(5).to_html()
+```
+:::
+
+## Manufacturing Data Exploration
+
+Numerical Features Relationship
+
+:::::: columns
+::: {.column width="60%"}
+```{python}
+#| fig-width: 10
+#| fig-height: 10
+import pandas as pd
+mfg_data = pd.read_csv("data/predictive_maintenance.csv")
+
+num_cols = mfg_data.select_dtypes(include="number").columns.to_list()
+plot_df = mfg_data[num_cols]
+plt.figure(figsize=(10,6))
+sns.pairplot(plot_df, diag_kind='kde',hue='Target')
+plt.title('Relationship between numerical features')
+plt.show()
+```
+:::
+
+:::: {.column width="40%"}
+::: {style="font-size: 0.7em;"}
+-   Failures marked on the pair plot showing stronger relationship with some features.
+-   There is some non-linear correlation observed between Torque and Rotation speed (suggesting data is not entirely random and mimic a real use case).
+-   Failures seems on the "edges" of the distributions for multiple features which might help models to identify them.
+:::
+::::
+::::::
+
+## Manufacturing Data Preparation
+
+Data Scaling
+
+``` python
+#Standardization
+from sklearn.preprocessing import StandardScaler # use StandardScalar from sklearn
+
+mfg_data_scaled = mfg_data.copy().drop(columns=['Target'])
+
+scaler = StandardScaler()
+num_cols = mfg_data_scaled.select_dtypes(include="number").columns.to_list()
+mfg_data_scaled[num_cols] = scaler.fit_transform(mfg_data_scaled[num_cols])
+```
+
+Categorical Features Encoding
+
+``` python
+from sklearn.preprocessing import LabelEncoder
+
+l_encoder = LabelEncoder()
+mfg_data_3['FailureType_encoded'] = l_encoder.fit_transform(mfg_data_3['Failure Type'])
+```
+
+## Model Training
+::: {style="font-size: 0.7em;"}
+Using a method from Chanin Nantasenamat, multiple classification models were compared for ROC-AUC and the F1 score.
+:::
+
+![](images/paste-1.png){width="667"}
+
+## Model Selection
+::: {style="font-size: 0.7em;"}
+Two models will be evaluated Random Forest Classifer based on the results of the comparison and XGboost based on research model might be proper for imbalance datasets (<https://xgboosting.com/xgboost-for-imbalanced-classification/>)
+:::
+
+![](images/paste-2.png){width="953"}
+
+::: {style="font-size: 0.7em;"}
+Source: Data_Exploration_PDM-ipynb
+:::
+
+## Random Forest Model Tuning
+::: {style="font-size: 0.7em;"}
+For hyper-parameter tuning a combination of *sklearn.model_selection - GridSearchCV and RandomizedSearchCV* was used to run over multiple options.
+:::
+``` python
+from sklearn.model_selection import RandomizedSearchCV
+from scipy.stats import randint, uniform
+
+param_dist = {
+    'n_estimators': randint(50, 500),
+    'max_depth': randint(1, 20),
+    'min_samples_split': randint(2, 20),
+    'min_samples_leaf': randint(1, 20),
+    'max_features': ['auto', 'sqrt', 'log2']
+}
+
+rf = RandomForestClassifier()
+rand_search = RandomizedSearchCV(rf, param_distributions=param_dist, n_iter=20, cv=5,scoring='f1')
+rand_search.fit(X_train, y_train)
+print('Best hyperparameters:', rand_search.best_params_)
+```
+
+## Random Forest Results
+::: {style="font-size: 0.7em;"}
+After tuning the model, the best F1 score obtained is 0.62. Cross-validation results suggest the model is over-fitting and might not be able to generalize.
+
+-   RandomForestClassifier: ROC AUC on test dataset: 0.9751
+
+-   RandomForestClassifier: f1 score on test dataset: 0.6258
+
+Cross Validation Results
+
+-   Test_f1 Cross Validation results 0.45
+
+-   Train_f1 Cross Validation results 0.83
+:::
+
+## Handling imbalanced dataset
+::: {style="font-size: 0.7em;"}
+Different techniques were explored to see if the model would improve over-fitting and also the F1-score. Over sampling using Synthetic Minority Oversampling Technique (SMOTE) and under sampling using RandomUnderSampler from imblearn were used with no significant improvement
+:::
+
+## Random Forest Threshold Optimization
+::: {style="font-size: 0.7em;"}
+To improve the F1 score, a change in the probability threshold was explored; instead of using the standard 0.5, an analysis was done to estimate the ideal point to optimized the F1-Score
+:::
+
+![](images/paste-3.png){width="702"}
+
+## Results of Optimized Model
+
+![](images/paste-4.png){width="870"}
+
+::: {style="font-size: 0.7em;"}
+-   After improving the threshold based on the model results, a balance can be found between precision and recall.
+:::
+
+## XGBoost Model Definition
+::: {style="font-size: 0.7em;"}
+A second approach is to use XGBoost; this model has the option to handle weights for each class. By adding a higher weight to the minority class, it is expected to handle the imbalance in the dataset better.
+:::
+
+``` python
+import xgboost as xgb
+
+scale_pos_weight = (len(y0) - np.sum(y0)) / np.sum(y0) #Intent is to give more weight to the minority class (1s on this case)
+
+xgmodel = xgb.XGBClassifier(
+    scale_pos_weight=scale_pos_weight,
+    use_label_encoder=False,
+    eval_metric='logloss',
+    random_state=42
+)
+
+xgmodel.fit(X_train, y_train)
+y_pred = xgmodel.predict(X_test)
+
+f1 = f1_score(y_test, y_pred)
+print(f"F1 Score: {f1:.3f}")
+```
+
+## XGBoost Model Results
+::: {style="font-size: 0.7em;"}
+The F1 score for XGBoost without significant tuning and using weights is slightly better than the random forest model originally used.
+:::
+
+::::: columns
 ::: {.column width="40%"}
--   or bullet points[^1]
+Model Results
+
+-   F1 Score: 0.757
+
+Cross Validation
+
+-   Test_f1 Cross Validation results 0.73
+
+-   Train_f1 Cross Validation results 1.00
 :::
 
 ::: {.column width="60%"}
-or in two columns
+![](images/paste-7.png){width="738"}
 :::
+:::::
+
+## XGBoost MultiClass Model
+::: {style="font-size: 0.7em;"}
+XGBoost results were slightly better than Random Forest. Multi-class model will be created to predict the failure types:
 :::
 
-[^1]: And add footnotes
-
--   like
-
--   this
-
-## Code
-
-```{python}
-from sklearn.linear_model import LinearRegression
-import statsmodels.api as sm
-import pandas as pd
-
-# Fit a linear regression model
-X = mtcars[['speed']]
-y = mtcars['mpg']
-model = LinearRegression().fit(X, y)
-
-# Summary of the model
-X2 = sm.add_constant(X)
-est = sm.OLS(y, X2)
-est2 = est.fit()
-print(est2.summary())
+``` python
+# Defining weights for each class.
+classes, counts = np.unique(y_train, return_counts=True)
+inv_freq = 1.0 / counts
+class_weights = dict(zip(classes, inv_freq))
+sample_weights = np.array([class_weights[label] for label in y_train])
 ```
 
-## Plots
+## XGBoost Model Results
 
-```{python}
-penguins['species'] = penguins['species'].apply(lambda x: "Adelie" if x == "Adelie" else "Other")
-sns.scatterplot(data=penguins, x='flipper_length_mm', y='body_mass_g', hue='species')
-plt.show()
-```
+::::: columns
+::: {.column width="40%"}
+Model Results
 
-## Plot and text
+-   F1 score per class:
 
-::: columns
-::: {.column width="50%"}
--   Some text
-
--   goes here
+    -   Heat-Dissipation: 0.95
+    -   No Failure: 0.99
+    -   Overstrain Failure 0.76
+    -   Powe Failure: 0.8
+    -   Random Failures and Tool Wear Failure are both 0.
 :::
 
-::: {.column width="50%"}
-```{python}
-#| warning: false
-#| fig.width: 5.5
-fig, ax = plt.subplots(figsize=(5.5, 5.5 * 0.618))
-sns.boxplot(data=penguins, x='bill_length_mm', y='species', hue='species', ax=ax)
-plt.show()
-```
+::: {.column width="60%"}
+![](images/paste-9.png){width="690"}
 :::
+:::::
+
+## XGBoost Features of Importance
+::: {style="font-size: 0.7em;"}
+Although the model performance is not great for all classes, understanding what features are important in the prediction model can help subject matter experts interpret results and take action to reduce failures and improve the process overall.
 :::
 
-# A new section...
+![](images/paste-10.png){width="649"}
 
-## Tables
+## Time Series Analysis
+::: {style="font-size: 0.7em;"}
+The second dataset consists of a simulated real-time sensor data from industrial machines. Source is also from Kaggle and it can be found here: <https://www.kaggle.com/datasets/ziya07/intelligent-manufacturing-dataset/data>
+:::
 
-If you want to generate a table, make sure it is in the HTML format (instead of Markdown or other formats), e.g.,
+Key Features:
 
-```{python}
-penguins.head().to_html()
-```
-
-## Images
-
-![Image credit: Danielle Navarro, Percolate.](images/watercolour_sys02_img34_teacup-ocean.png){fig-align="center" width="500"}
-
-## Math Expressions {.smaller}
-
-You can write LaTeX math expressions inside a pair of dollar signs, e.g. \$\\alpha+\\beta\$ renders $\alpha + \beta$. You can use the display style with double dollar signs:
-
+::: {style="font-size: 0.7em;"}
 ```         
-$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$
+-   Industrial IoT Sensor Data
+    -   Temperature_C, Vibration_Hz, Power_Consumption_kW,
+-   Network Performance:
+    -   Network_Latency_ms, Packet_Loss_%, Quality_Control_Defect_Rate_%
+-   Production Indicators:
+    -   Production_Speed_units_per_hr, Predictive_Maintenance_Score, Error_Rate_%
+-   Target Column Efficiency_StatusKey Features:
+```
+:::
+
+## Time Serie Data Exploration
+::: {style="font-size: 0.7em;"}
+Example of 5 rows of the synthetic data used for predictive modeling.
+:::
+
+::: {style="font-size: 0.5em;"}
+```{python}
+import pandas as pd 
+df1 = pd.read_csv("data/manufacturing_6G_dataset.csv") 
+df1.head(5).to_html()
+```
+:::
+
+## Time Serie Data Exploration cont.
+::: {style="font-size: 0.7em;"}
+Example distribution for one Feature
+:::
+
+![](images/paste-11.png){width="808"}
+
+::: {style="font-size: 0.7em;"}
+Data seems randomly generated instead of coming from a real scenario.
+:::
+
+## Time Serie Data Exploration cont.
+
+::: {style="font-size: 0.7em;"}
+In order to make the data more like a real scenario, a mean was calculated for every 12 hours.
+:::
+
+![](images/paste-12.png){width="829"}
+
+## Time Serie Data Exploration cont.
+
+::: {style="font-size: 0.7em;"}
+Example Trend for Power_Consumption_kW for one of the machines.
+:::
+
+![](images/paste-14.png)
+
+## Time Serie Data Analysis
+::: {style="font-size: 0.7em;"}
+After pre-processing the data, the study is focused on understanding how algorithms like the seasonal_decompose library and ARIMA (or auto_arima) can be used for anomaly detection.
+:::
+
+## Time Serie Data Seasonal-Decomposition
+
+``` python
+#https://www.statsmodels.org/stable/generated/statsmodels.tsa.seasonal.seasonal_decompose.html
+from statsmodels.tsa.seasonal import seasonal_decompose
+# Decompose the time series
+decomposition = seasonal_decompose(ts_df['Power_Consumption_kW'], model = 'additive',period=14) # 7days for period
 ```
 
-$$
-\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i
-$$
+![](images/paste-15.png)
 
-Limitations:
+## Time Serie Data Seasonal-Decomposition
+::: {style="font-size: 0.7em;"}
+Anomaly detection using Residuals:
+:::
 
-1.  The source code of a LaTeX math expression must be in one line, unless it is inside a pair of double dollar signs, in which case the starting `$$` must appear in the very beginning of a line, followed immediately by a non-space character, and the ending `$$` must be at the end of a line, led by a non-space character;
+``` python
+# Anomalies in residuals
+residuals = decomposition.resid.dropna() #Obtain residuals from decompositions
+threshold = 2 * residuals.std() # Our rule, on this cases based on research we selected to use 2X the standard deviation of the residuals
+anomalies = np.abs(residuals) > threshold # Applying the rule to obtain the anomalies
+```
+::: {style="font-size: 0.7em;"}
+4 Data points identified as anomalies using this method
+:::
 
-2.  There should not be spaces after the opening `$` or before the closing `$`.
+## Time Serie Data ARIMA
+::: {style="font-size: 0.7em;"}
+Model Fitting
+:::
 
-# Wrap up
+``` python
+#Fitting auto-arima model
+from pmdarima import auto_arima
+auto_model = auto_arima(ts_df['Power_Consumption_kW'], 
+                        seasonal=False,
+ 
+                        error_action = 'ignore',  
+                        suppress_warnings = True, 
+                        stepwise = True)
+print(auto_model.summary())
+print(f"Best (p, d, q): ({auto_model.order[0]}, {auto_model.order[1]}, {auto_model.order[2]})")
+```
 
-## Feeling adventurous?
+## Time Serie Data ARIMA - Results
+::: {style="font-size: 0.7em;"}
+Results from Auto-Arima Model Fitting
+:::
 
--   You are welcomed to use the default styling of the slides. In fact, that's what I expect majority of you will do. You will differentiate yourself with the content of your presentation.
+![](images/paste-16.png){width="943"}
 
--   But some of you might want to play around with slide styling. Some solutions for this can be found at https://quarto.org/docs/presentations/revealjs.
+## Time Serie Data ARIMA - Results Cont.
+
+::: {style="font-size: 0.7em;"}
+Results from the predictions are almost a constant value around the center of the distribution, meaning the ARIMA model is closely predicting the mean for every single value of the time series data. One reason for this could be that the data are not predictable.
+:::
+
+![](images/paste-17.png)
+
+## Conclusions
+
+::: {style="font-size: 0.5em;"}
+-   The study demonstrated the application of concepts in machine learning to a common manufacturing problem.
+
+-   The Random Forest Classifier model ROC-AUC scores are high, indicating the model can differentiate effectively between fails and no-fails. However, in a real manufacturing process, the majority of the results are positive/pass or no fails, making this indicator not the best for this case. Recall and precision are more appropriate for this case; depending on the use case, we would want to tune the model in one or the other direction or use the F1-score to optimize both.
+
+-   The Random Forest model performed poorly for the F1 score when using a standard threshold of 0.5. The study demonstrated this can be improved by selecting an optimized threshold based on the model results.
+
+-   Sampling can be a useful method to handle imbalanced datasets; however, in this specific case, it did not provide a significant improvement in model performance.
+
+-   Assigning weights to each classes to handle the imbalance sample in combination with gradient boosting (XGboost) model, resulted in better results for F1-Score.
+
+-   Multi-class classification results using the learnings from the binary-classification were demonstrated. Due to the nature and frequency of the failures and their relationship with the input features, two classes had zero F1-scores, meaning the model was not able to predict these. Other classes had an F1-score between 0.5 and 0.7, similar to the binary classification results.
+
+-   The study demonstrated how seasonal-decomposition and ARIMA can be used for anomaly detection in a real manufacturing use case; results showed how data points deviating the most from the center/target can be identified by using these methods. These methods might not be the best for a process where there are no patterns and data might just have random variability from the target.
+::: 
