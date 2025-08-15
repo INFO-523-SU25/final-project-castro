@@ -55,8 +55,8 @@ penguins = sns.load_dataset('penguins').dropna()
 
 ## Introduction
 
--   All code used to generate the charts and table on this presentation can be found here:
--   https://github.com/INFO-523-SU25/final-project-castro/tree/main/src
+-   All code used to generate the charts and tables on this presentation can be found here:
+-   <https://github.com/INFO-523-SU25/final-project-castro/tree/main/src>
 
 ## Dataset for Machine Learning Classification
 
@@ -78,7 +78,7 @@ penguins = sns.load_dataset('penguins').dropna()
 
 ## Manufacturing Data Exploration
 
-Example of 5 rows of the synthetic data used for predictive modeling.
+Example of 5 rows of the synthetic data used for classification problem.
 
 ::: {style="font-size: 0.5em;"}
 ```{python}
@@ -89,22 +89,20 @@ df1.head(5).to_html()
 :::
 
 ## Manufacturing Data Exploration
+
 ::: {style="font-size: 0.7em;"}
 Numerical Features Relationship
 :::
+
 :::::: columns
 ::: {.column width="60%"}
 ```{python}
-#| fig-width: 10
-#| fig-height: 10
 import pandas as pd
 mfg_data = pd.read_csv("data/predictive_maintenance.csv")
 
 num_cols = mfg_data.select_dtypes(include="number").columns.to_list()
 plot_df = mfg_data[num_cols]
-plt.figure(figsize=(10,6))
 sns.pairplot(plot_df, diag_kind='kde',hue='Target');
-plt.title('Relationship between numerical features')
 plt.show()
 ```
 :::
@@ -113,7 +111,7 @@ plt.show()
 ::: {style="font-size: 0.7em;"}
 -   Failures marked on the pair plot showing stronger relationship with some features.
 -   There is some non-linear correlation observed between Torque and Rotation speed (suggesting data is not entirely random and mimic a real use case).
--   Failures seems on the "edges" of the distributions for multiple features which might help models to identify them.
+-   There is a clear relationship between the fails and some of the features.
 :::
 ::::
 ::::::
@@ -145,10 +143,10 @@ mfg_data_3['FailureType_encoded'] = l_encoder.fit_transform(mfg_data_3['Failure 
 ## Model Selection
 
 ::: {style="font-size: 0.7em;"}
-Using a method from Chanin Nantasenamat, multiple classification models were compared for ROC-AUC and the F1 score.
+Method adapted from Chanin Nantasenamat’s GitHub code, multiple classification models were compared for ROC-AUC and the F1 score.
 :::
 
-![](images/paste-1.png){width="667"}
+![](images/paste-20.png)
 
 ## Model Selection Cont.
 
@@ -157,10 +155,6 @@ Two models will be evaluated Random Forest Classifer based on the results of the
 :::
 
 ![](images/paste-2.png){width="953"}
-
-::: {style="font-size: 0.7em;"}
-Source: Data_Exploration_PDM-ipynb
-:::
 
 ## Random Forest Model Tuning
 
@@ -200,14 +194,20 @@ Cross Validation Results
 -   Test_f1 Cross Validation results 0.45
 
 -   Train_f1 Cross Validation results 0.83
+
+There is a big difference in performance between test and train results for the CV test.
 :::
 
 ## Handling imbalanced dataset
 
 ::: {style="font-size: 0.7em;"}
-- Different techniques were explored to see if the model would improve over-fitting and also the F1-score. 
+Different techniques were explored to see if the model would improve over-fitting and F1-score.
 
-- Over sampling using Synthetic Minority Oversampling Technique (SMOTE) and under sampling using RandomUnderSampler from imblearn were used with no significant improvement
+-   Over sampling using Synthetic Minority Oversampling Technique (SMOTE) (imblearn)
+
+-   Under sampling using RandomUnderSampler (imblearn)
+
+No significant Improvement was observed on this specific dataset.
 :::
 
 ## Random Forest Threshold Optimization
@@ -218,7 +218,7 @@ To improve the F1 score, a change in the probability threshold was explored; ins
 
 ![](images/paste-3.png){width="702"}
 
-## Results of Optimized Model
+## Optimized Model Results
 
 ![](images/paste-4.png){width="870"}
 
@@ -229,7 +229,7 @@ To improve the F1 score, a change in the probability threshold was explored; ins
 ## XGBoost Model Definition
 
 ::: {style="font-size: 0.7em;"}
-A second approach is to use XGBoost; this model has the option to handle weights for each class. By adding a higher weight to the minority class, it is expected to handle the imbalance in the dataset better.
+A second approach is to employ XGBoost, a model that offers native functionality for applying class-specific weights. By increasing the weight of the minority class, the model is anticipated to more effectively mitigate class imbalance.
 :::
 
 ``` python
@@ -254,7 +254,7 @@ print(f"F1 Score: {f1:.3f}")
 ## XGBoost Model Results
 
 ::: {style="font-size: 0.7em;"}
-The F1 score for XGBoost without significant tuning and using weights is slightly better than the random forest model originally used.
+The F1 score for XGBoost without significant tuning and using class-weights is better than the random forest model originally used.
 :::
 
 ::::: columns
@@ -275,10 +275,10 @@ Cross Validation
 :::
 :::::
 
-## XGBoost MultiClass Model
+## XGBoost Multi-Class Model
 
 ::: {style="font-size: 0.7em;"}
-XGBoost results were slightly better than Random Forest. Multi-class model will be created to predict the failure types:
+XGBoost results were better than Random Forest. Multi-class model will be created to predict the failure types:
 :::
 
 ``` python
@@ -291,8 +291,9 @@ sample_weights = np.array([class_weights[label] for label in y_train])
 
 ## XGBoost Model Results
 
-::::: columns
-::: {.column width="40%"}
+:::::: columns
+:::: {.column width="40%"}
+::: {style="font-size: 0.7em;"}
 Model Results
 
 -   F1 score per class:
@@ -303,16 +304,17 @@ Model Results
     -   Powe Failure: 0.8
     -   Random Failures and Tool Wear Failure are both 0.
 :::
+::::
 
 ::: {.column width="60%"}
 ![](images/paste-9.png){width="690"}
 :::
-:::::
+::::::
 
 ## XGBoost Features of Importance
 
 ::: {style="font-size: 0.7em;"}
-Although the model performance is not great for all classes, understanding what features are important in the prediction model can help subject matter experts interpret results and take action to reduce failures and improve the process overall.
+Although the model performance is not great for all classes, understanding what features are important in the prediction model can help context experts interpret results and take action to reduce failures and improve the process overall.
 :::
 
 ![](images/paste-10.png){width="649"}
@@ -340,7 +342,7 @@ Key Features:
 ## Time Serie Data Exploration
 
 ::: {style="font-size: 0.7em;"}
-Example of 5 rows of the synthetic data used for predictive modeling.
+Example of 5 rows of the synthetic data used for time series analysis.
 :::
 
 ::: {style="font-size: 0.5em;"}
@@ -382,7 +384,7 @@ Example Trend for Power_Consumption_kW for one of the machines.
 ## Time Serie Data Analysis
 
 ::: {style="font-size: 0.7em;"}
-After pre-processing the data, the study is focused on understanding how algorithms like the seasonal_decompose library and ARIMA (or auto_arima) can be used for anomaly detection.
+After pre-processing the data, the study is focused on understanding how algorithms like the seasonal_decompose and ARIMA (or auto_arima) can be used for anomaly detection.
 :::
 
 ## Time Serie Data Seasonal-Decomposition
@@ -411,6 +413,8 @@ anomalies = np.abs(residuals) > threshold # Applying the rule to obtain the anom
 
 ::: {style="font-size: 0.7em;"}
 4 Data points identified as anomalies using this method
+
+![](images/paste-18.png){width="695"}
 :::
 
 ## Time Serie Data ARIMA
@@ -443,7 +447,7 @@ Results from Auto-Arima Model Fitting
 ## Time Serie Data ARIMA - Results Cont.
 
 ::: {style="font-size: 0.7em;"}
-Results from the predictions are almost a constant value around the center of the distribution, meaning the ARIMA model is closely predicting the mean for every single value of the time series data. One reason for this could be that the data are not predictable.
+Results from the predictions are almost a constant value around the center of the distribution, meaning the ARIMA model is closely predicting the mean for every single value of the time series data. One reason for this could be that the data is not predictable.
 :::
 
 ![](images/paste-17.png)
@@ -451,17 +455,11 @@ Results from the predictions are almost a constant value around the center of th
 ## Conclusions
 
 ::: {style="font-size: 0.5em;"}
--   The study demonstrated the application of concepts in machine learning to a common manufacturing problem.
-
--   The Random Forest Classifier model ROC-AUC scores are high, indicating the model can differentiate effectively between fails and no-fails. However, in a real manufacturing process, the majority of the results are positive/pass or no fails, making this indicator not the best for this case. Recall and precision are more appropriate for this case; depending on the use case, we would want to tune the model in one or the other direction or use the F1-score to optimize both.
-
+-   The study demonstrated the application of concepts in machine learning to common manufacturing problems.
+-   The Random Forest Classifier model ROC-AUC scores are high, indicating the model can differentiate effectively between fails and no-fails. However, in a real manufacturing process, the majority of the results are positive/pass, making this indicator not the best for this case. Recall and precision are more appropriate; depending on the use case, we would want to tune the model in one or the other direction or use the F1-score to optimize both.
 -   The Random Forest model performed poorly for the F1 score when using a standard threshold of 0.5. The study demonstrated this can be improved by selecting an optimized threshold based on the model results.
-
 -   Sampling can be a useful method to handle imbalanced datasets; however, in this specific case, it did not provide a significant improvement in model performance.
-
 -   Assigning weights to each classes to handle the imbalance sample in combination with gradient boosting (XGboost) model, resulted in better results for F1-Score.
-
--   Multi-class classification results using the learnings from the binary-classification were demonstrated. Due to the nature and frequency of the failures and their relationship with the input features, two classes had zero F1-scores, meaning the model was not able to predict these. Other classes had an F1-score between 0.5 and 0.7, similar to the binary classification results.
-
+-   Multi-class classification results using the learnings from the binary-classification were demonstrated. Due to the nature and frequency of the failures and their relationship with the input features, two classes had zero F1-scores, meaning the model was not able to predict them. Other classes had acceptable F1-scores.
 -   The study demonstrated how seasonal-decomposition and ARIMA can be used for anomaly detection in a real manufacturing use case; results showed how data points deviating the most from the center/target can be identified by using these methods. These methods might not be the best for a process where there are no patterns and data might just have random variability from the target.
 :::

@@ -20,11 +20,11 @@ jupyter: python3
 
 ## Abstract
 
-<p style="text-align: justify;">In recent decades, industry continues modernizing processes and equipment. This is creating enormous amounts of data that in many cases might be underutilized. Vast and rich data from machines, like temperatures, vibration, and pressure, are constantly monitored. Traditional statistical process control is vastly used to oversee key process parameters and provide feedback to technicians when something might be behaving abnormally. In recent years, with the explosion of AI, industry has been looking at different approaches to monitor these parameters and use different techniques to more effectively predict or detect defects in products or problems in the machines.</p>
+<p style="text-align: justify;">In recent decades, industry continues modernizing processes and equipment. This is creating enormous amounts of data that in many cases might be underutilized. Vast and rich data from machines, like temperatures, vibration, and pressure, are constantly monitored. Traditional statistical process control is vastly used to oversee key process parameters and provide feedback to technicians when something is behaving abnormally. In recent years, with the explosion of AI, industry has been looking at different approaches to monitor these parameters and use different techniques to more effectively predict or detect defects in products or problems.</p>
 
-<p style="text-align: justify;">This study focuses on using machine learning algorithms like random forest and gradient boosting to predict failures and the type of failure. Real factory data has noise, interactions with many factors, and is highly imbalanced. Machines are expected to run all the time without failure, and processes ideally will produce products without any defects, which makes data highly skewed toward a good state and just a few failures. Tuning models to handle this imbalance is critical in the factories. Different sampling methods were evaluated: creating synthetic data to over-sample the negative, under-sampling the positive, and giving weights are approaches that can be used.</p>
+<p style="text-align: justify;">This study focuses on using machine learning algorithms like random forest and gradient boosting to predict failures and the type of failure. Real factory data has noise, interactions with many variables, and is highly imbalanced. Machines are expected to run all the time without failure, and processes ideally will produce products without any defects, which makes data highly skewed toward a good state. Tuning models to handle this imbalance is critical. Different sampling methods were evaluated: creating synthetic data to over-sample the negative, under-sampling the positive, and giving weights are approaches that can be used.</p>
 
-<p style="text-align: justify;">A second study was done on time-series data, where algorithms like ARIMA and LSTM were used to detect outliers over time. One big challenge is that manufacturing KPIs are typically centered around a target, and variation is random, ideally following a normal distribution but not necessarily following a pattern, which limits the use of these algorithms to predict results. However, results can still be used to detect outliers, but this might not be the best approach.</p>
+<p style="text-align: justify;">A second study was done on time-series data, where algorithms like ARIMA and LSTM were used to detect outliers over time. One big challenge is that manufacturing KPIs are typically centered around a target, and variation is random, ideally following a normal distribution but not necessarily following a pattern, which limits the use of these algorithms to predict results. Results from this approaches can still be used to detect outliers, but might not be the best approach.</p>
 
 ## Background
 
@@ -215,9 +215,9 @@ calculate_stats(mfg_data2,'Power_Consumption_kW')
 
 **Figure 3**: Example of the distribution observed on second dataset for parameter Power_Consumption_kW. Data does not follow a specific distribution, it seems randomly created over a specific range.
 
-<p style="text-align: justify;">As can be observed in Figure 3, the data from the second dataset seem more randomly created without following a specific distribution. Data in a real scenario for a machine typically follow some type of distribution and are not completely random; a common situation is that processes typically have a target value or values over time, and there is some natural variation around them. The raw data as they are from this source are not usable for the intent of this study. In order to make the data more like a real scenario, a mean was calculated for every 12 hours.</p>
+<p style="text-align: justify;">As can be observed in Figure 3, the data from the second dataset seem more randomly created without following a specific distribution. Data in a real scenario for a machine typically follow some type of distribution and is not completely random; a common situation is that processes typically have a target value or values over time, and there is some natural variation around them. The raw data as they are from this source are not usable for the purpose of this study. In order to make the data more like a real scenario, a mean was calculated every 12 hours for each machine.</p>
 
-<p style="text-align: justify;">Results from the data transformation using the mean for blocks of 12 hours can be observed in figures 4 and 5.</p>
+<p style="text-align: justify;">Results from the data transformation can be observed in figures 4 and 5.</p>
 
 ```{python}
 #| label: PMdata6
@@ -256,7 +256,7 @@ plot_hist_qq(mfg_data2,'Power_Consumption_kW')
 calculate_stats(mfg_data2,'Power_Consumption_kW')    
 ```
 
-**Figure 4**: Example of the distribution for the result of grouping the data every 12 hours and calculating the mean for each group.
+**Figure 4**: Example of the distribution after transformation.
 
 ```{python}
 #| label: PMdata7
@@ -288,7 +288,7 @@ plt.ylabel("Power_Consumption (kW)")
 plt.grid(True, linestyle="--", alpha=0.5)  
 ```
 
-**Figure 5**: Example Trend for Power_Consumption_kW for one of the machines.
+**Figure 5**: Example trend for Power_Consumption_kW for one of the machines.
 
 All detailed data cleaning and exploration for the second dataset can be found here: <https://github.com/INFO-523-SU25/final-project-castro/blob/main/src/Data_Exploration_MFG6G.ipynb>
 
@@ -296,7 +296,7 @@ All detailed data cleaning and exploration for the second dataset can be found h
 
 <p style="text-align: justify;">The first objective of this study is to build a classification model for failures. The model will analyze data from Table 1 to accurately predict the specific failures and failure types.</p>
 
-<p style="text-align: justify;">The initial model will be focused on predicting the Target feature as a binary classification, basically pass or fail based on the dataset. The data were split using 70% for training and 30% for testing using stratification to maintain the distribution of 0s/1s for each set, as the data are highly imbalanced.</p>
+<p style="text-align: justify;">The initial model will be focused on predicting the Target feature as a binary classification, basically pass or fail based on the dataset. The data were split using 70% for training and 30% for testing using stratification to maintain the distribution of 0s/1s for each set, as the data is highly imbalanced.</p>
 
 ```{python}
 #| label: PMdata8
@@ -368,7 +368,7 @@ classifiers = [
 
 ::::: columns
 ::: column
-## AUC ROC Results
+## ROC-AUC Results
 
 ```{python}
 #| label: PMdata9
@@ -424,11 +424,11 @@ Table 5. F1 Score for multiple models evaluated
 :::
 :::::
 
-<p style="text-align: justify;">This initial exploration of multiple models resulted in very high ROC_AUC scores for most of the models and not so great results for the F1 score. Based on these results we can observed: model might be over-fitting the data, resulting in high scores, and second, because data is highly imbalanced, model is great at predicting 0s (good) as they represent the majority of the sample, but when looking at the F1 score, the precision and recall for predicting the 1s is not the best. For the purposes of this study, predicting the 1s (fails) is the main problem as these are the defects.</p>
+<p style="text-align: justify;">This initial exploration of multiple options resulted in very high ROC_AUC scores for most of the models and not so great results for the F1 score. Based on these results we can observed: models might be over-fitting the data, resulting in high scores, and second, because data is highly imbalanced, model is great at predicting 0s (good) as they represent the vast majority. When looking at the F1 score, the precision and recall for predicting the 1s is not the best. For the purposes of this study, predicting the 1s (fails) is the main purpose in a real industry use case.</p>
 
 <p style="text-align: justify;">Based on this initial results two models will be further evaluated Random Forest Classifer and XGBoost. Fine tuning hyper-parameters and working multiple methods of sampling to reduce or manage the imbalance of the data.</p>
 
-<p style="text-align: justify;">For hyper-parameter tuning a combination of *sklearn.model_selection - GridSearchCV and RandomizedSearchCV* was used to run over multiple options.</p>
+<p style="text-align: justify;">For hyper-parameter tuning a combination of *sklearn.model_selection - GridSearchCV and RandomizedSearchCV* were used to run over multiple options.</p>
 
 Final hyper-parameters for Random Forest Classifier Model:
 
@@ -513,9 +513,9 @@ cv_results = cross_validation_check(rf_model,X,y0)
 
 ```
 
-<p style="text-align: justify;">After tuning the model, the best F1 score obtained is 0.62. Cross-validation results suggest the model is over-fitting and might not be able to generalize. </p>
+<p style="text-align: justify;">After tuning the model, the best F1 score obtained is 0.62. Cross-validation results suggest the model is over-fitting and might not be able to generalize well.</p>
 
-<p style="text-align: justify;">Different techniques were explored to see if the model would improve over-fitting and also the F1-score. Synthetic Minority Oversampling Technique (SMOTE) from the imblearn library was used; the intent of this method is to over-sample the minority class by creating synthetic data. The results from this were worse than the original model. Additionally, the under-sampling method RandomUnderSampler from the same imblearn library was used; in this case, it was used to reduce the sample of the majority class and try to balance the data. The results were not better than original tuned model.</p>
+<p style="text-align: justify;">Different techniques were explored to see if the model would improve. First attemp was using Synthetic Minority Oversampling Technique (SMOTE) from the imblearn library, the intent of this method is to over-sample the minority class by creating synthetic data. The results from this were worse than the original model. Additionally, a under-sampling method RandomUnderSampler from the same imblearn library was tested; on this case, it was used to reduce the sample of the majority class and try to balance the data. The results were not better than original tuned model.</p>
 
 <p style="text-align: justify;">Additionally, to improve the F1 score, a change in the probability threshold was explored; instead of using the normal 0.5, an analysis was done to estimate the ideal point to optimized the F1-Score.</p>
 
@@ -604,7 +604,7 @@ plt.show()
 :::
 :::::
 
-<p style="text-align: justify;">As observed in Figures 7 and 8, after improving the threshold based on the model results, a balance can be found between precision and recall. Now, this can be tuned to improve one of them, in some cases model might need to be tune if specific direction to reduce over-reject or under-reject.</p>
+<p style="text-align: justify;">As observed in Figures 7 and 8, after improving the threshold a balance can be found between precision and recall. Depending on the use case, this optimization can be used to improve one of them, in some cases model might need to be tune in a specific direction to reduce over-reject or under-reject.</p>
 
 <p style="text-align: justify;">A second approach is to use XGBoost; this model has the option to handle weights for each class. By adding a higher weight to the minority class, it is expected to handle the imbalance in the dataset better.</p>
 
@@ -632,7 +632,7 @@ results = cross_validation_check(xgmodel,X_train,y_train)
 
 ```
 
-<p style="text-align: justify;">The F1 score for XGBoost without significant tuning and using weights is slightly better than the random forest model originally used. Cross-validation results are still showing some level of over-fitting but have improved from the original model. Hyperparameter tuning was done with a similar approach as with random forest, but no significant improvement was observed. </p>
+<p style="text-align: justify;">The F1 score for XGBoost without significant tuning and using weights is better than the random forest model originally used. Cross-validation results are still showing some level of over-fitting but improved from the original model. Hyperparameter tuning was done with a similar approach as with random forest, but no significant improvement was observed.</p>
 
 ```{python}
 #| label: PMdata17
@@ -653,7 +653,7 @@ plt.show()
 
 **Figure 9**. Confusion Matrix for results of XGBoost Model.
 
-<p style="text-align: justify;">XGboost results are similar to the random forest optimized threshold model. Based on the cross validation results over-fitting seems better on XGBoost model.</p>
+<p style="text-align: justify;">XGboost results are better to the random forest optimized threshold model. Based on the cross validation results over-fitting seems also slightly better for the XGBoost model.</p>
 
 ### Predicting the Failure Type
 
@@ -701,11 +701,11 @@ plt.show()
 
 **Figure 10.** Confusion Matrix results for XGBoost Multi-Class model. Class Names: 'Heat Dissipation Failure': 0, 'No Failure': 1, 'Overstrain Failure': 2, 'Power Failure': 3, 'Random Failures': 4, 'Tool Wear Failure':
 
-<p style="text-align: justify;">In this case for multi-class classification, the model was trained using the same parameters as before. The main difference is how the weights (sample_weight parameter) were estimated; as there are more than one class, an array was calculated. Based on research, a common way to calculate these weights is to count the occurrence of classes and assign weights inversely proportional to this frequency.</p>
+<p style="text-align: justify;">In this case for multi-class classification, the model was trained using the same parameters as inital model. The main difference is how the weights (sample_weight parameter) were estimated; as there are more than one class, an array was calculated containing the weights for class. Based on research, a common way to calculate these weights is to count the occurrence of classes and assign weights inversely proportional to this frequency.</p>
 
 <p style="text-align: justify;">Model as with binary classification is great at predicting the majority (no Failure) on this case. Class 0 which is heat-dissipation has a F1 Score of 0.95, Class 2: Overstrain Failure F1 score is 0.76 and Class 3: Power Failure is 0.75 which are similar to original model results. However, on this case model is not able to predict class 4 and 5 (Random Failures,Tool Wear Failure), F1 score is 0 for these.</p>
 
-<p style="text-align: justify;">One last important outcome of these models is to understand what features are really important. Although the model performance is not great for all classes, understanding what features are important in the prediction model can help subject matter experts interpret results and take action to reduce failures and improve the process overall.</p>
+<p style="text-align: justify;">One additional important outcome of these models is to understand what features are really important. Although the model performance is not great for all classes, understanding what features are important in the prediction model can help subject matter experts interpret results and take action to reduce failures and improve the process overall.</p>
 
 ```{python}
 #| label: PMdata19
@@ -723,9 +723,9 @@ Detailed Jupyter Notebook can be found here: <https://github.com/INFO-523-SU25/f
 
 ### Time Series Analysis
 
-<p style="text-align: justify;">The second objective of this study, which is also an important tool in manufacturing, is how to use machine learning and data mining skills to detect outliers or anomalies in the process. A lot of the data that streams from equipment is time-based; it is collected or sampled at a certain frequency. Anomaly detection is very valuable for the industry, as having the ability to know when a machine or process is deviating from the 'normal' can help to stop and repair equipment quickly, reducing the impact problems might have due to downtimes and defects.</p>
+<p style="text-align: justify;">The second objective of this study, which is also very relevant in manufacturing, is how to use machine learning and data mining skills to detect outliers or anomalies in the process. Many of the data streams from equipment are time-based; they are collected or sampled at a certain frequency. Anomaly detection is very valuable for the industry, as having the ability to know when a machine or process is deviating from the 'normal' can help to stop and repair equipment quickly, reducing the impact due to downtimes or defects.</p>
 
-<p style="text-align: justify;">After pre-processing the data, the study is focused on understanding how algorithms like the seasonal_decompose library and ARIMA (or auto_arima) can be used for anomaly detection. As initially observed, the data were randomly generated over a specific range; it does not follow a trend, and there is no "seasonality" in it.</p>
+<p style="text-align: justify;">After pre-processing the data, the study is focused on understanding how algorithms like the seasonal_decompose and ARIMA (or auto_arima) can be used for anomaly detection. As initially observed, the data was randomly generated over a specific range; it does not follow a trend, and there is no "seasonality" in it.</p>
 
 ```{python}
 #| label: PMdata20
@@ -777,7 +777,7 @@ threshold = 2 * residuals.std() # Our rule, on this cases based on research we s
 anomalies = np.abs(residuals) > threshold # Applying the rule to obtain the anomalies
 ```
 
-<p style="text-align: justify;">The second approach is to use ARIMA (Autoregressive Integrated Moving Average model). An ARIMA model is fitted using Auto_Arima from pmdarima to facilitate the definition of P/D/Q values. Similar to other methods, after fitting the model, we calculate the difference between the actual values and the predicted values and define rules for this difference, as done with the seasonal decomposition.</p>
+<p style="text-align: justify;">The second approach is to use ARIMA (Autoregressive Integrated Moving Average model). An ARIMA model is fitted using Auto_Arima from pmdarima to facilitate the definition of P/D/Q values. Similar to other methods, after fitting the model, we calculate the difference between the actual values and the predicted values and define rules for this difference.</p>
 
 ```{python}
 #| label: PMdata21
@@ -829,40 +829,40 @@ plt.show()
 
 **Figure 12.** Results from ARIMA model and anomaly points detected based on pre-defined threshold of 2X the standard deviation of the residuals (True = anomaly).
 
-<p style="text-align: justify;">Results from the predictions are almost a constant value around the center of the distribution, meaning the ARIMA model is closely predicting the mean for every single value of the time series data. One reason for this could be that the data are not predictable; as originally stated, they originated from a random generator and were summarized. Why is this still a valid dataset? A real machine, as mentioned before, might be designed to run at a specific target—let's say, consuming 6 KW—however, there is a normal variation in processes and systems that adds noise. The accuracy and precision of the tool to maintain this target will define how much it varies from this target. Now, this variation is most of the time not predictable; in these cases, models like ARIMA or the seasonal decomposition might not be ideal. LSTM was also explored, with similar results.</p>
+<p style="text-align: justify;">Results from the predictions are almost a constant value around the center of the distribution, meaning the ARIMA model is closely predicting the mean for every value of the time series data. One reason for this could be that the data is not predictable; as originally stated, they originated from a random generator and was summarized. Why is this still a valid dataset? A real machine, as mentioned before, might be designed to run at a specific target, let's say consuming 6 KW. There is a normal variation in processes and systems that adds noise, this variability in many cases is not predictable. Models like ARIMA or the seasonal decomposition might not be ideal for these situations, but they still provide some insights about what can be considered an outlier/anomaly. LSTM was also explored, with similar results.</p>
 
-<p style="text-align: justify;">Although this dataset might not be ideal for these models, as observed in Figure 12, the model is able to identify the points that deviate the most from the center line, which is what we intended to explore in this analysis. Now, there might be simpler methods to do this in this specific case.</p>
+<p style="text-align: justify;">Although this dataset might not be ideal for these models, as observed in Figure 12, the model is able to identify the points that deviate the most from the "normal" range, which is what we intended to explore in this analysis. Now, there might be simpler methods to do this for this specific case.</p>
 
 Details of analysis can be found here: [https://github.com/INFO-523-SU25/final-project-castro/blob/main/src/Time_Series_Analysis.ipynb](https://github.com/INFO-523-SU25/final-project-castro/blob/main/src/Model_Training_PDM.ipynb)
 
 ## Conclusions
 
--   The study demonstrated the application of concepts in machine learning to a common manufacturing problem.
--   The Random Forest Classifier model ROC-AUC scores are high, indicating the model can differentiate effectively between fails and no-fails. However, in a real manufacturing process, the majority of the results are positive/pass or no fails, making this indicator not the best for this case. Recall and precision are more appropriate for this case; depending on the use case, we would want to tune the model in one or the other direction or use the F1-score to optimize both.
+-   The study demonstrated the application of concepts in machine learning to common manufacturing problems.
+-   The Random Forest Classifier model ROC-AUC scores are high, indicating the model can differentiate effectively between fails and no-fails. However, in a real manufacturing process, the majority of the results are positive/pass, making this indicator not the best for this case. Recall and precision are more appropriate; depending on the use case, we would want to tune the model in one or the other direction or use the F1-score to optimize both.
 -   The Random Forest model performed poorly for the F1 score when using a standard threshold of 0.5. The study demonstrated this can be improved by selecting an optimized threshold based on the model results.
 -   Sampling can be a useful method to handle imbalanced datasets; however, in this specific case, it did not provide a significant improvement in model performance.
 -   Assigning weights to each classes to handle the imbalance sample in combination with gradient boosting (XGboost) model, resulted in better results for F1-Score.
--   Multi-class classification results using the learnings from the binary-classification were demonstrated. Due to the nature and frequency of the failures and their relationship with the input features, two classes had zero F1-scores, meaning the model was not able to predict these. Other classes had an F1-score between 0.5 and 0.7, similar to the binary classification results.
+-   Multi-class classification results using the learnings from the binary-classification were demonstrated. Due to the nature and frequency of the failures and their relationship with the input features, two classes had zero F1-scores, meaning the model was not able to predict them. Other classes had acceptable F1-scores.
 -   The study demonstrated how seasonal-decomposition and ARIMA can be used for anomaly detection in a real manufacturing use case; results showed how data points deviating the most from the center/target can be identified by using these methods. These methods might not be the best for a process where there are no patterns and data might just have random variability from the target.
 
 ## References
 
-Shivam Bansal. “Machine Predictive Maintenance Classification Dataset.” Kaggle. Available at: https://www.kaggle.com/datasets/shivamb/machine-predictive-maintenance-classification.
+1. Shivam Bansal. “Machine Predictive Maintenance Classification Dataset.” Kaggle. Available at: https://www.kaggle.com/datasets/shivamb/machine-predictive-maintenance-classification.
 
-Ziya. “Intelligent Manufacturing Dataset.” Kaggle. Available at: https://www.kaggle.com/datasets/ziya07/intelligent-manufacturing-dataset/data.
+2. Ziya. “Intelligent Manufacturing Dataset.” Kaggle. Available at: https://www.kaggle.com/datasets/ziya07/intelligent-manufacturing-dataset/data.
 
-INFO-523 University of Arizona. “Comparing Classifiers.” GitHub Notebook. Available at: https://github.com/dataprofessor/code/blob/master/python/comparing-classifiers.ipynb.
+3. INFO-523 University of Arizona. “Comparing Classifiers.” GitHub Notebook. Available at: https://github.com/dataprofessor/code/blob/master/python/comparing-classifiers.ipynb.
 
-L. Lemaître, A. Nogueira, and C. K. Aridas. “SMOTE: Synthetic Minority Over-sampling Technique.” In: imbalanced-learn documentation. Available at: https://imbalanced-learn.org/stable/references/generated/imblearn.over_sampling.SMOTE.html.
+4. L. Lemaître, A. Nogueira, and C. K. Aridas. “SMOTE: Synthetic Minority Over-sampling Technique.” In: imbalanced-learn documentation. Available at: https://imbalanced-learn.org/stable/references/generated/imblearn.over_sampling.SMOTE.html.
 
-L. Lemaître, A. Nogueira, and C. K. Aridas. “RandomUnderSampler.” In: imbalanced-learn documentation. Available at: https://imbalanced-learn.org/stable/references/generated/imblearn.under_sampling.RandomUnderSampler.html.
+5. L. Lemaître, A. Nogueira, and C. K. Aridas. “RandomUnderSampler.” In: imbalanced-learn documentation. Available at: https://imbalanced-learn.org/stable/references/generated/imblearn.under_sampling.RandomUnderSampler.html.
 
-T. Chen and C. Guestrin. “XGBoost for Imbalanced Classification.” XGBoosting.com. Available at: https://xgboosting.com/xgboost-for-imbalanced-classification.
+6. T. Chen and C. Guestrin. “XGBoost for Imbalanced Classification.” XGBoosting.com. Available at: https://xgboosting.com/xgboost-for-imbalanced-classification.
 
-S. Puranik. “Calinski–Harabasz Index for K-Means Clustering Evaluation.” Towards Data Science, August 2021. Available at: https://towardsdatascience.com/calinski-harabasz-index-for-k-means-clustering-evaluation-using-python-4fefeeb2988e/.
+7. S. Puranik. “Calinski–Harabasz Index for K-Means Clustering Evaluation.” Towards Data Science, August 2021. Available at: https://towardsdatascience.com/calinski-harabasz-index-for-k-means-clustering-evaluation-using-python-4fefeeb2988e/.
 
-Skipper Seabold and Josef Perktold. “seasonal_decompose — Seasonal Decomposition of Time Series.” statsmodels, accessed 2025. Available at: https://www.statsmodels.org/stable/generated/statsmodels.tsa.seasonal.seasonal_decompose.html.
+8. Skipper Seabold and Josef Perktold. “seasonal_decompose — Seasonal Decomposition of Time Series.” statsmodels, accessed 2025. Available at: https://www.statsmodels.org/stable/generated/statsmodels.tsa.seasonal.seasonal_decompose.html.
 
-Jason Brownlee. “Time Series Prediction with LSTM Recurrent Neural Networks in Python with Keras.” Machine Learning Mastery, March 10, 2018. Available at: https://machinelearningmastery.com/time-series-prediction-lstm-recurrent-neural-networks-python-keras/.
+9. Jason Brownlee. “Time Series Prediction with LSTM Recurrent Neural Networks in Python with Keras.” Machine Learning Mastery, March 10, 2018. Available at: https://machinelearningmastery.com/time-series-prediction-lstm-recurrent-neural-networks-python-keras/.
 
-Explanations, troubleshooting, grammar and clarifications were aided by ChatGPT (OpenAI, 2025). OpenAI. \[Large language model\]. https://chat.openai.com/
+10. Explanations, troubleshooting, grammar and clarifications were aided by ChatGPT (OpenAI, 2025). OpenAI. \[Large language model\]. https://chat.openai.com/
