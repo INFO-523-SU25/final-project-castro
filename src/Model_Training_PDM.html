@@ -343,7 +343,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#handling-imbalanced-target" id="toc-handling-imbalanced-target" class="nav-link" data-scroll-target="#handling-imbalanced-target">Handling imbalanced target</a></li>
   <li><a href="#second-method---xgboost" id="toc-second-method---xgboost" class="nav-link" data-scroll-target="#second-method---xgboost">Second Method - XGBOOST</a></li>
   <li><a href="#failure-type-prediction" id="toc-failure-type-prediction" class="nav-link" data-scroll-target="#failure-type-prediction">FAILURE TYPE PREDICTION</a></li>
-  <li><a href="#clustering" id="toc-clustering" class="nav-link" data-scroll-target="#clustering">Clustering</a></li>
+  <li><a href="#explore-clustering-as-new-feature-to-improve-performance" id="toc-explore-clustering-as-new-feature-to-improve-performance" class="nav-link" data-scroll-target="#explore-clustering-as-new-feature-to-improve-performance">Explore Clustering as new Feature to improve performance</a></li>
   </ul>
 </nav>
     </div>
@@ -1412,8 +1412,8 @@ F1 score per class: [0.68421053 0.9897506  0.53333333 0.77192982 0.         0.  
 </div>
 </div>
 </section>
-<section id="clustering" class="level1">
-<h1>Clustering</h1>
+<section id="explore-clustering-as-new-feature-to-improve-performance" class="level1">
+<h1>Explore Clustering as new Feature to improve performance</h1>
 <div id="56e85fe1" class="cell" data-execution_count="66">
 <div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Will use only numeric columns for clustering</span></span>
 <span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>num_cols <span class="op">=</span> X.select_dtypes(include<span class="op">=</span><span class="st">"number"</span>).columns.to_list()</span>
