@@ -26,6 +26,8 @@ jupyter: python3
 
 <p style="text-align: justify;">A second study was done on time-series data, where algorithms like ARIMA and LSTM were used to detect outliers over time. One big challenge is that manufacturing KPIs are typically centered around a target, and variation is random, ideally following a normal distribution but not necessarily following a pattern, which limits the use of these algorithms to predict results. Results from this approaches can still be used to detect outliers, but might not be the best approach.</p>
 
+**Presentation:** [Panopto 🎥](https://arizona.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=f307c03e-af38-4d1e-8f42-b33e0018ad7d)
+
 ## Background
 
 <p style="text-align: justify;">To explore machine algorithms to detect fails, a dataset from Kaggle was used. The data "[Machine Predictive Maintenance Classification](https://www.kaggle.com/datasets/shivamb/machine-predictive-maintenance-classification) is a synthetic dataset that reflects a real use case in the industry, based on the source. The dataset consists of 10000 rows with 14 different features.</p>
@@ -847,22 +849,22 @@ Details of analysis can be found here: [https://github.com/INFO-523-SU25/final-p
 
 ## References
 
-1. Shivam Bansal. “Machine Predictive Maintenance Classification Dataset.” Kaggle. Available at: https://www.kaggle.com/datasets/shivamb/machine-predictive-maintenance-classification.
+1.  Shivam Bansal. “Machine Predictive Maintenance Classification Dataset.” Kaggle. Available at: https://www.kaggle.com/datasets/shivamb/machine-predictive-maintenance-classification.
 
-2. Ziya. “Intelligent Manufacturing Dataset.” Kaggle. Available at: https://www.kaggle.com/datasets/ziya07/intelligent-manufacturing-dataset/data.
+2.  Ziya. “Intelligent Manufacturing Dataset.” Kaggle. Available at: https://www.kaggle.com/datasets/ziya07/intelligent-manufacturing-dataset/data.
 
-3. INFO-523 University of Arizona. “Comparing Classifiers.” GitHub Notebook. Available at: https://github.com/dataprofessor/code/blob/master/python/comparing-classifiers.ipynb.
+3.  INFO-523 University of Arizona. “Comparing Classifiers.” GitHub Notebook. Available at: https://github.com/dataprofessor/code/blob/master/python/comparing-classifiers.ipynb.
 
-4. L. Lemaître, A. Nogueira, and C. K. Aridas. “SMOTE: Synthetic Minority Over-sampling Technique.” In: imbalanced-learn documentation. Available at: https://imbalanced-learn.org/stable/references/generated/imblearn.over_sampling.SMOTE.html.
+4.  L. Lemaître, A. Nogueira, and C. K. Aridas. “SMOTE: Synthetic Minority Over-sampling Technique.” In: imbalanced-learn documentation. Available at: https://imbalanced-learn.org/stable/references/generated/imblearn.over_sampling.SMOTE.html.
 
-5. L. Lemaître, A. Nogueira, and C. K. Aridas. “RandomUnderSampler.” In: imbalanced-learn documentation. Available at: https://imbalanced-learn.org/stable/references/generated/imblearn.under_sampling.RandomUnderSampler.html.
+5.  L. Lemaître, A. Nogueira, and C. K. Aridas. “RandomUnderSampler.” In: imbalanced-learn documentation. Available at: https://imbalanced-learn.org/stable/references/generated/imblearn.under_sampling.RandomUnderSampler.html.
 
-6. T. Chen and C. Guestrin. “XGBoost for Imbalanced Classification.” XGBoosting.com. Available at: https://xgboosting.com/xgboost-for-imbalanced-classification.
+6.  T. Chen and C. Guestrin. “XGBoost for Imbalanced Classification.” XGBoosting.com. Available at: https://xgboosting.com/xgboost-for-imbalanced-classification.
 
-7. S. Puranik. “Calinski–Harabasz Index for K-Means Clustering Evaluation.” Towards Data Science, August 2021. Available at: https://towardsdatascience.com/calinski-harabasz-index-for-k-means-clustering-evaluation-using-python-4fefeeb2988e/.
+7.  S. Puranik. “Calinski–Harabasz Index for K-Means Clustering Evaluation.” Towards Data Science, August 2021. Available at: https://towardsdatascience.com/calinski-harabasz-index-for-k-means-clustering-evaluation-using-python-4fefeeb2988e/.
 
-8. Skipper Seabold and Josef Perktold. “seasonal_decompose — Seasonal Decomposition of Time Series.” statsmodels, accessed 2025. Available at: https://www.statsmodels.org/stable/generated/statsmodels.tsa.seasonal.seasonal_decompose.html.
+8.  Skipper Seabold and Josef Perktold. “seasonal_decompose — Seasonal Decomposition of Time Series.” statsmodels, accessed 2025. Available at: https://www.statsmodels.org/stable/generated/statsmodels.tsa.seasonal.seasonal_decompose.html.
 
-9. Jason Brownlee. “Time Series Prediction with LSTM Recurrent Neural Networks in Python with Keras.” Machine Learning Mastery, March 10, 2018. Available at: https://machinelearningmastery.com/time-series-prediction-lstm-recurrent-neural-networks-python-keras/.
+9.  Jason Brownlee. “Time Series Prediction with LSTM Recurrent Neural Networks in Python with Keras.” Machine Learning Mastery, March 10, 2018. Available at: https://machinelearningmastery.com/time-series-prediction-lstm-recurrent-neural-networks-python-keras/.
 
 10. Explanations, troubleshooting, grammar and clarifications were aided by ChatGPT (OpenAI, 2025). OpenAI. \[Large language model\]. https://chat.openai.com/
